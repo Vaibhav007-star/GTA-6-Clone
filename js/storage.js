@@ -91,3 +91,9 @@ class StorageManager {
 }
 
 const storage = new StorageManager();
+
+if (typeof window !== 'undefined') {
+  window.StorageManager = StorageManager;
+  window.storage = storage;
+}
+

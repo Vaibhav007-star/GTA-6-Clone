@@ -212,3 +212,8 @@ class TrafficManager {
     }
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.TrafficManager = TrafficManager;
+}
+

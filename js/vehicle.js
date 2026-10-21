@@ -240,3 +240,8 @@ class Vehicle {
     ctx.restore();
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.Vehicle = Vehicle;
+}
+

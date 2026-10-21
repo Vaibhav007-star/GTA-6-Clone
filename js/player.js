@@ -18,14 +18,15 @@ class PlayerController {
 
     // Active vehicle reference when driving
     this.currentVehicle = null;
-    this.get isInVehicle() {
-      return this.currentVehicle !== null;
-    }
 
     // Walk animation variables
     this.strideTimer = 0;
     this.footToggle = false;
     this.isMoving = false;
+  }
+
+  get isInVehicle() {
+    return this.currentVehicle !== null;
   }
 
   update(dt, cityMap, vehicles) {
@@ -179,3 +180,8 @@ class PlayerController {
     ctx.restore();
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.PlayerController = PlayerController;
+}
+

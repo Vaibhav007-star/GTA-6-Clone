@@ -136,3 +136,8 @@ class PoliceDispatcher {
     }
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.PoliceDispatcher = PoliceDispatcher;
+}
+

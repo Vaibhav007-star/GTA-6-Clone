@@ -61,6 +61,11 @@ class GameHUD {
 
 const gameHUD = new GameHUD();
 
+if (typeof window !== 'undefined') {
+  window.GameHUD = GameHUD;
+  window.gameHUD = gameHUD;
+}
+
 class RetroOutlawGame {
   constructor() {
     this.canvas = document.getElementById('game-canvas');
@@ -279,7 +284,17 @@ class RetroOutlawGame {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+function initGame() {
+  if (window.__retroGameInitialized) return;
+  window.__retroGameInitialized = true;
   const game = new RetroOutlawGame();
   game.start();
-});
+  window.retroGame = game;
+}
+
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', initGame);
+} else {
+  initGame();
+}
+

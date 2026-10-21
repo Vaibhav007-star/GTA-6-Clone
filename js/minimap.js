@@ -107,3 +107,8 @@ class MiniMap {
     ctx.strokeRect(0, 0, w, h);
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.MiniMap = MiniMap;
+}
+

@@ -68,3 +68,9 @@ class ParticleManager {
     }
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.SkidMarkManager = SkidMarkManager;
+  window.ParticleManager = ParticleManager;
+}
+

@@ -245,3 +245,9 @@ class SoundEngine {
 }
 
 const audio = new SoundEngine();
+
+if (typeof window !== 'undefined') {
+  window.SoundEngine = SoundEngine;
+  window.audio = audio;
+}
+

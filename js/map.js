@@ -252,3 +252,8 @@ class CityMap {
     }
   }
 }
+
+if (typeof window !== 'undefined') {
+  window.CityMap = CityMap;
+}
+

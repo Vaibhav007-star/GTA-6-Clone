@@ -198,3 +198,9 @@ class InputCoordinator {
 }
 
 const input = new InputCoordinator();
+
+if (typeof window !== 'undefined') {
+  window.InputCoordinator = InputCoordinator;
+  window.input = input;
+}
+

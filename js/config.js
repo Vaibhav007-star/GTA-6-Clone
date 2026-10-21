@@ -3,6 +3,22 @@
  * 100% Original Offline Top-Down Action Driving Experience
  */
 
+// Canvas roundRect polyfill for older browsers
+if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, radii) {
+    if (typeof radii === 'number') radii = [radii];
+    const r = radii ? radii[0] || 0 : 0;
+    this.beginPath();
+    this.moveTo(x + r, y);
+    this.arcTo(x + w, y, x + w, y + h, r);
+    this.arcTo(x + w, y + h, x, y + h, r);
+    this.arcTo(x, y + h, x, y, r);
+    this.arcTo(x, y, x + w, y, r);
+    this.closePath();
+    return this;
+  };
+}
+
 const CONFIG = {
   TITLE: 'Retro City: Outlaw',
   VERSION: '1.0.0',
@@ -101,3 +117,8 @@ const CONFIG = {
     MAX_STARS: 5
   }
 };
+
+if (typeof window !== 'undefined') {
+  window.CONFIG = CONFIG;
+}
+
