@@ -340,3 +340,4 @@ class CityMap3D {
 if (typeof window !== 'undefined') {
   window.CityMap3D = CityMap3D;
 }
+

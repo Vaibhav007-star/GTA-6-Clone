@@ -184,3 +184,4 @@ class Player3D {
 if (typeof window !== 'undefined') {
   window.Player3D = Player3D;
 }
+

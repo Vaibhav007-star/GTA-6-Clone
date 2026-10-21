@@ -322,3 +322,4 @@ class Vehicle3D {
 if (typeof window !== 'undefined') {
   window.Vehicle3D = Vehicle3D;
 }
+
