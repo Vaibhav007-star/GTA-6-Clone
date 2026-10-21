@@ -184,6 +184,53 @@ class RetroOutlawGame {
         <div class="stat-row"><span>Traffic Collisions:</span> <strong>${stats.collisions}</strong></div>
       `;
     }
+
+    // Populate Mission Launcher
+    const missionContainer = document.getElementById('pause-missions-list');
+    if (missionContainer) {
+      const missions = dataManager.getMissions();
+      missionContainer.innerHTML = missions.map(m => `
+        <div class="launcher-item">
+          <div class="launcher-info">
+            <strong>${m.title}</strong>
+            <small>Reward: +$${m.rewardCash} • ${m.description}</small>
+          </div>
+          <button class="btn-launcher" onclick="window.missionSystem.startMission('${m.id}'); window.retroGame.togglePause();">START</button>
+        </div>
+      `).join('');
+    }
+
+    // Populate Vehicle Spawner
+    const vehicleContainer = document.getElementById('pause-vehicles-list');
+    if (vehicleContainer) {
+      const vehicles = dataManager.getVehicles();
+      vehicleContainer.innerHTML = vehicles.map(v => `
+        <div class="launcher-item">
+          <div class="launcher-info">
+            <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:${v.colors ? v.colors[0] : (v.defaultColor || '#3498db')}; margin-right:6px;"></span>
+            <strong>${v.name}</strong> (${v.category})
+            <small>Top Speed: ${v.maxSpeed} MPH • Accel: ${v.acceleration}</small>
+          </div>
+          <button class="btn-launcher" onclick="window.retroGame.spawnVehicle('${v.id}'); window.retroGame.togglePause();">SPAWN</button>
+        </div>
+      `).join('');
+    }
+  }
+
+  spawnVehicle(vehicleId) {
+    const vData = dataManager.getVehicleById(vehicleId);
+    const target = this.player.isInVehicle ? this.player.currentVehicle : this.player;
+    const typeKey = vData.id.includes('sports') ? 'SPORTS' : (vData.id.includes('muscle') ? 'MUSCLE' : (vData.id.includes('police') ? 'POLICE' : 'SEDAN'));
+    const color = vData.colors ? vData.colors[0] : (vData.defaultColor || '#e74c3c');
+
+    const v = new Vehicle(target.x + 60, target.y + 60, typeKey, target.angle, color);
+    v.name = vData.name;
+    v.maxSpeed = vData.maxSpeed;
+    v.acceleration = vData.acceleration;
+    v.turnRate = vData.turnRate;
+    v.driftFriction = vData.driftFriction;
+    this.vehicles.push(v);
+    gameHUD.showNotification(`Spawned: ${vData.name}!`);
   }
 
   start() {
@@ -226,7 +273,17 @@ class RetroOutlawGame {
     // 5. Update Particles
     this.particles.update(dt);
 
-    // 6. Smooth Camera Follow
+    // 6. Update Combat & Projectiles
+    if (window.combatSystem) {
+      window.combatSystem.update(dt, this);
+    }
+
+    // 7. Update Mission System
+    if (window.missionSystem) {
+      window.missionSystem.update(dt, this);
+    }
+
+    // 8. Smooth Camera Follow
     const target = this.player.isInVehicle ? this.player.currentVehicle : this.player;
     this.camera.x += (target.x - this.camera.x) * CONFIG.CAMERA_SMOOTHING;
     this.camera.y += (target.y - this.camera.y) * CONFIG.CAMERA_SMOOTHING;
@@ -257,24 +314,34 @@ class RetroOutlawGame {
     // 1. Map Layer (Ground, Roads, Buildings, Pickups)
     this.map.render(ctx, this.camera);
 
-    // 2. Skid Marks on Asphalt
+    // 2. Active Mission Targets & Checkpoints
+    if (window.missionSystem) {
+      window.missionSystem.render(ctx);
+    }
+
+    // 3. Skid Marks on Asphalt
     this.skidMarks.render(ctx);
 
-    // 3. Parked and Player-Driven Vehicles
+    // 4. Parked and Player-Driven Vehicles
     for (const v of this.vehicles) {
       v.render(ctx);
     }
 
-    // 4. Civilian Traffic & Pedestrians
+    // 5. Civilian Traffic & Pedestrians
     this.traffic.render(ctx);
 
-    // 5. Police Pursuit Squads
+    // 6. Police Pursuit Squads
     this.police.render(ctx);
 
-    // 6. Player Character (rendered on foot)
+    // 7. Player Character (rendered on foot)
     this.player.render(ctx);
 
-    // 7. Smoke Particles
+    // 8. Ballistic Projectiles & Muzzle Flashes
+    if (window.combatSystem) {
+      window.combatSystem.render(ctx);
+    }
+
+    // 9. Smoke Particles
     this.particles.render(ctx);
 
     ctx.restore();

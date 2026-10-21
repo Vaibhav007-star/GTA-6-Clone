@@ -27,6 +27,7 @@
       </div>
 
       <!-- Right: Wanted Stars, Speed, Menu Button -->
+      <!-- Right: Wanted Stars, Speed, Weapon, Menu Button -->
       <div class="hud-right">
         <div class="wanted-stars" id="hud-stars">
           <span class="star-icon">★</span>
@@ -40,7 +41,21 @@
           <span id="hud-speed-val">0 MPH</span>
         </div>
 
-        <button class="hud-btn-icon" id="btn-pause">PAUSE</button>
+        <!-- Weapon Selector Badge -->
+        <div id="hud-weapon-badge" onclick="window.combatSystem.nextWeapon()" title="Click or Press 1-4 to Switch Weapon">
+          <span id="hud-weapon-icon">👊</span>
+          <span id="hud-weapon-name">FISTS</span>
+        </div>
+
+        <!-- Active Mission Box -->
+        <div id="mission-hud-box">
+          <div class="mission-hud-header">
+            <span id="mission-hud-title">ACTIVE MISSION</span>
+            <span id="mission-hud-timer">60s</span>
+          </div>
+        </div>
+
+        <button class="hud-btn-icon" id="btn-pause">PAUSE / MENU</button>
       </div>
     </div>
 
@@ -64,10 +79,22 @@
 
     <!-- Pause & Stats Modal -->
     <div id="pause-modal">
-      <div class="modal-content">
+      <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
         <h2 class="modal-title">Retro City: Outlaw</h2>
         <div class="stats-grid" id="pause-stats">
           <!-- Populated dynamically -->
+        </div>
+
+        <!-- Missions Launcher -->
+        <div class="modal-section-title">⭐ Test Open-Source Missions</div>
+        <div class="launcher-list" id="pause-missions-list">
+          <!-- Populated dynamically from missions.json -->
+        </div>
+
+        <!-- Vehicle Spawner Garage -->
+        <div class="modal-section-title">🚗 Spawn Vehicles (Garage)</div>
+        <div class="launcher-list" id="pause-vehicles-list">
+          <!-- Populated dynamically from vehicles.json -->
         </div>
 
         <div class="controls-guide">
@@ -76,9 +103,10 @@
             <li><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> Move / Steer</li>
             <li><kbd>F</kbd> / <kbd>Enter</kbd> Enter / Exit Car</li>
             <li><kbd>Space</kbd> Sprint / Handbrake Drift</li>
+            <li><kbd>Left Click</kbd> Punch / Shoot Weapon</li>
+            <li><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> Switch Weapons</li>
             <li><kbd>H</kbd> Car Horn</li>
-            <li><kbd>M</kbd> Mute Audio</li>
-            <li><kbd>P</kbd> Pause Game</li>
+            <li><kbd>P</kbd> Pause / Fleet Menu</li>
           </ul>
         </div>
 
@@ -91,19 +119,21 @@
   </div>
 
   <!-- Game Scripts in Load Order -->
-  <script src="js/config.js?v=1.0.2"></script>
-  <script src="js/storage.js?v=1.0.2"></script>
-  <script src="js/data_manager.js?v=1.0.2"></script>
-  <script src="js/audio.js?v=1.0.2"></script>
-  <script src="js/input.js?v=1.0.2"></script>
-  <script src="js/map.js?v=1.0.2"></script>
-  <script src="js/particles.js?v=1.0.2"></script>
-  <script src="js/vehicle.js?v=1.0.2"></script>
-  <script src="js/player.js?v=1.0.2"></script>
-  <script src="js/traffic.js?v=1.0.2"></script>
-  <script src="js/police.js?v=1.0.2"></script>
-  <script src="js/minimap.js?v=1.0.2"></script>
-  <script src="js/game.js?v=1.0.2"></script>
+  <script src="js/config.js?v=1.0.3"></script>
+  <script src="js/storage.js?v=1.0.3"></script>
+  <script src="js/data_manager.js?v=1.0.3"></script>
+  <script src="js/audio.js?v=1.0.3"></script>
+  <script src="js/input.js?v=1.0.3"></script>
+  <script src="js/map.js?v=1.0.3"></script>
+  <script src="js/particles.js?v=1.0.3"></script>
+  <script src="js/vehicle.js?v=1.0.3"></script>
+  <script src="js/player.js?v=1.0.3"></script>
+  <script src="js/traffic.js?v=1.0.3"></script>
+  <script src="js/police.js?v=1.0.3"></script>
+  <script src="js/combat.js?v=1.0.3"></script>
+  <script src="js/mission_system.js?v=1.0.3"></script>
+  <script src="js/minimap.js?v=1.0.3"></script>
+  <script src="js/game.js?v=1.0.3"></script>
 </body>
 </html>
 
