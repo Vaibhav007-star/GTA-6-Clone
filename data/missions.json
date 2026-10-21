@@ -1,0 +1,55 @@
+{
+  "missions": [
+    {
+      "id": "mission_01_boost",
+      "title": "Midnight Joyride",
+      "giver": "The Fixer",
+      "type": "CAR_THEFT",
+      "description": "Locate the red Venom GT parked near the Downtown District and deliver it safely to the chop shop garage.",
+      "targetVehicle": "SPORTS",
+      "rewardCash": 750,
+      "rewardRep": 50,
+      "timeLimit": 90,
+      "dropoff": { "x": 1960, "y": 750, "radius": 40 },
+      "minWantedOnStart": 0
+    },
+    {
+      "id": "mission_02_escape",
+      "title": "Five-Alarm Heat",
+      "giver": "Anonymous Payphone",
+      "type": "POLICE_EVADE",
+      "description": "Trigger the law to 2-Stars, maintain the high-speed pursuit for 30 seconds, then completely lose your wanted level.",
+      "targetStars": 2,
+      "surviveTime": 30,
+      "rewardCash": 1200,
+      "rewardRep": 100,
+      "minWantedOnStart": 2
+    },
+    {
+      "id": "mission_03_courier",
+      "title": "Neon Sprint",
+      "giver": "Courier Express",
+      "type": "CHECKPOINT_RACE",
+      "description": "Race across three designated intersection checkpoints before the timer expires.",
+      "checkpoints": [
+        { "x": 750, "y": 750 },
+        { "x": 1300, "y": 1850 },
+        { "x": 1850, "y": 750 }
+      ],
+      "rewardCash": 900,
+      "rewardRep": 70,
+      "timeLimit": 60
+    },
+    {
+      "id": "mission_04_stash",
+      "title": "Park Briefcase Stash",
+      "giver": "Street Insider",
+      "type": "COLLECT_ITEMS",
+      "description": "Collect 3 hidden cash briefcases hidden around the Central Green Park.",
+      "targetCount": 3,
+      "rewardCash": 1500,
+      "rewardRep": 120,
+      "timeLimit": 120
+    }
+  ]
+}

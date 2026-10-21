@@ -1,0 +1,64 @@
+{
+  "wantedTiers": [
+    {
+      "stars": 1,
+      "title": "Local Infraction",
+      "dispatchUnits": 1,
+      "unitType": "POLICE",
+      "chaseSpeedMultiplier": 1.0,
+      "aggression": "LOW",
+      "rammingFrequency": 0.2,
+      "roadblocks": false,
+      "cooldownTime": 10,
+      "description": "Single squad cruiser dispatched. Officer will attempt to pull over or pit the player."
+    },
+    {
+      "stars": 2,
+      "title": "High-Speed Pursuit",
+      "dispatchUnits": 2,
+      "unitType": "POLICE",
+      "chaseSpeedMultiplier": 1.15,
+      "aggression": "MEDIUM",
+      "rammingFrequency": 0.5,
+      "roadblocks": false,
+      "cooldownTime": 14,
+      "description": "Two interceptor cruisers in active pursuit with dual sirens. High-speed vector interception."
+    },
+    {
+      "stars": 3,
+      "title": "Tactical Containment",
+      "dispatchUnits": 3,
+      "unitType": "POLICE",
+      "chaseSpeedMultiplier": 1.25,
+      "aggression": "HIGH",
+      "rammingFrequency": 0.8,
+      "roadblocks": true,
+      "cooldownTime": 18,
+      "description": "Aggressive PIT maneuvers. Roadblocks deployed at key avenue intersections."
+    },
+    {
+      "stars": 4,
+      "title": "Special Response",
+      "dispatchUnits": 4,
+      "unitType": "HEAVY_ENFORCEMENT",
+      "chaseSpeedMultiplier": 1.35,
+      "aggression": "VERY_HIGH",
+      "rammingFrequency": 1.0,
+      "roadblocks": true,
+      "cooldownTime": 24,
+      "description": "Reinforced tactical cruisers and aggressive roadblock containment."
+    },
+    {
+      "stars": 5,
+      "title": "State Lockdown",
+      "dispatchUnits": 5,
+      "unitType": "STATE_TACTICAL",
+      "chaseSpeedMultiplier": 1.5,
+      "aggression": "LETHAL",
+      "rammingFrequency": 1.0,
+      "roadblocks": true,
+      "cooldownTime": 30,
+      "description": "Full citywide emergency. Maximum cruisers, spike strips, and total pursuit lockdown."
+    }
+  ]
+}

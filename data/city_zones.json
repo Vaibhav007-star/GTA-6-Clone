@@ -1,0 +1,48 @@
+{
+  "zones": [
+    {
+      "id": "zone_downtown",
+      "name": "Downtown Central",
+      "type": "Commercial",
+      "bounds": { "minX": 250, "minY": 250, "maxX": 1300, "maxY": 1300 },
+      "trafficDensity": "HIGH",
+      "pedestrianDensity": "HIGH",
+      "policeResponseTime": "FAST",
+      "streetColor": "#1e252b",
+      "description": "High-density skyscrapers, corporate plazas, and bustling avenue traffic."
+    },
+    {
+      "id": "zone_park",
+      "name": "Central Green Reserve",
+      "type": "Recreation",
+      "bounds": { "minX": 860, "minY": 860, "maxX": 1190, "maxY": 1190 },
+      "trafficDensity": "NONE",
+      "pedestrianDensity": "MEDIUM",
+      "policeResponseTime": "MEDIUM",
+      "streetColor": "#27ae60",
+      "description": "Public sanctuary with fountains, walkways, and secluded cash stashes."
+    },
+    {
+      "id": "zone_industrial",
+      "name": "Eastside Industrial & Yards",
+      "type": "Industrial",
+      "bounds": { "minX": 1300, "minY": 250, "maxX": 2350, "maxY": 1300 },
+      "trafficDensity": "MEDIUM",
+      "pedestrianDensity": "LOW",
+      "policeResponseTime": "SLOW",
+      "streetColor": "#182026",
+      "description": "Warehouses, cargo freight hubs, and underground vehicle chop-shops."
+    },
+    {
+      "id": "zone_southside",
+      "name": "Southside District",
+      "type": "Residential",
+      "bounds": { "minX": 250, "minY": 1300, "maxX": 2350, "maxY": 2350 },
+      "trafficDensity": "MEDIUM",
+      "pedestrianDensity": "MEDIUM",
+      "policeResponseTime": "MODERATE",
+      "streetColor": "#202b33",
+      "description": "Residential grid blocks, parking structures, and open cruising boulevards."
+    }
+  ]
+}

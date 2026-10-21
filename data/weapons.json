@@ -1,0 +1,77 @@
+{
+  "weapons": [
+    {
+      "id": "unarmed",
+      "name": "Fists",
+      "category": "Melee",
+      "damage": 12,
+      "range": 28,
+      "cooldown": 0.45,
+      "ammo": -1,
+      "spread": 0.1,
+      "noise": 5,
+      "icon": "👊"
+    },
+    {
+      "id": "bat",
+      "name": "Slugger Bat",
+      "category": "Melee",
+      "damage": 30,
+      "range": 35,
+      "cooldown": 0.6,
+      "ammo": -1,
+      "spread": 0.2,
+      "noise": 10,
+      "icon": "🏏"
+    },
+    {
+      "id": "pistol_9mm",
+      "name": "Hawk 9mm",
+      "category": "Handgun",
+      "damage": 28,
+      "range": 380,
+      "cooldown": 0.32,
+      "ammo": 48,
+      "clipSize": 12,
+      "reloadTime": 1.4,
+      "spread": 0.04,
+      "projectileSpeed": 950,
+      "noise": 120,
+      "price": 450,
+      "icon": "🔫"
+    },
+    {
+      "id": "smg_micro",
+      "name": "Cobra Micro-SMG",
+      "category": "Submachine Gun",
+      "damage": 18,
+      "range": 320,
+      "cooldown": 0.11,
+      "ammo": 120,
+      "clipSize": 30,
+      "reloadTime": 1.8,
+      "spread": 0.12,
+      "projectileSpeed": 880,
+      "noise": 140,
+      "price": 1200,
+      "icon": "⚡"
+    },
+    {
+      "id": "shotgun_pump",
+      "name": "Street Sweeper 12G",
+      "category": "Shotgun",
+      "damage": 75,
+      "pellets": 6,
+      "range": 240,
+      "cooldown": 0.85,
+      "ammo": 32,
+      "clipSize": 8,
+      "reloadTime": 2.2,
+      "spread": 0.22,
+      "projectileSpeed": 750,
+      "noise": 190,
+      "price": 1800,
+      "icon": "💥"
+    }
+  ]
+}
