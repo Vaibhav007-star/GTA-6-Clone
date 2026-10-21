@@ -25,8 +25,10 @@ class RetroOutlaw3D {
     this.scene.background = new THREE.Color(0x131a26); // Retro dusk sky
     this.scene.fog = new THREE.FogExp2(0x131a26, 0.0016);
 
-    // 2. Camera
+    // 2. Camera & Orbit Angles
     this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1.0, 3000);
+    this.cameraYaw = 0;
+    this.cameraPitch = 0.35;
     this.camera.position.set(750, 25, 710);
 
     // 3. WebGL Renderer
@@ -224,8 +226,8 @@ class RetroOutlaw3D {
     // 1. Update Map Collectibles
     this.map.update(dt, this.player);
 
-    // 2. Update Player
-    this.player.update(dt, this.map, this.vehicles);
+    // 2. Update Player with Camera-Relative Orientation
+    this.player.update(dt, this.map, this.vehicles, this.camera);
 
     // 3. Update Vehicles
     for (const v of this.vehicles) {
@@ -246,7 +248,7 @@ class RetroOutlaw3D {
       window.missionSystem.update(dt, dummyGame);
     }
 
-    // 7. Third-Person Chase Camera
+    // 7. Third-Person Chase & Free-Look Camera
     this.updateCamera(dt);
 
     // 8. Sync HUD
@@ -260,42 +262,54 @@ class RetroOutlaw3D {
   }
 
   updateCamera(dt) {
-    let targetX, targetY, targetZ, heading;
+    // Mouse Drag / Pointer Look Delta
+    if (input.mouseDelta.x !== 0 || input.mouseDelta.y !== 0) {
+      this.cameraYaw -= input.mouseDelta.x * 0.004;
+      this.cameraPitch = Math.max(-0.08, Math.min(1.05, this.cameraPitch + input.mouseDelta.y * 0.0035));
+      input.mouseDelta.x = 0;
+      input.mouseDelta.y = 0;
+    }
+
+    let targetX, targetY, targetZ;
 
     if (this.player.isInVehicle) {
       const car = this.player.currentVehicle;
       targetX = car.x;
-      targetY = car.y + 4.0;
+      targetY = car.y + 3.0;
       targetZ = car.z;
-      heading = car.angle;
 
-      // Dynamic pull back based on speed
-      const dist = 45.0 + Math.abs(car.speed) * 0.15;
-      const height = 22.0 + Math.abs(car.speed) * 0.05;
+      // Align camera yaw smoothly behind car direction
+      let angleDiff = car.angle - this.cameraYaw;
+      while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+      while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+      this.cameraYaw += angleDiff * Math.min(1.0, 3.8 * dt);
 
-      const camX = targetX - Math.sin(heading) * dist;
-      const camZ = targetZ - Math.cos(heading) * dist;
+      // Distance pulls back at high speed
+      const dist = 48.0 + Math.abs(car.speed) * 0.14;
+      const height = 18.0 + Math.sin(this.cameraPitch) * 16.0;
 
-      this.camera.position.x += (camX - this.camera.position.x) * 0.12;
-      this.camera.position.y += (targetY + height - this.camera.position.y) * 0.12;
-      this.camera.position.z += (camZ - this.camera.position.z) * 0.12;
+      const camX = targetX - Math.sin(this.cameraYaw) * dist;
+      const camZ = targetZ - Math.cos(this.cameraYaw) * dist;
+
+      this.camera.position.x += (camX - this.camera.position.x) * 0.16;
+      this.camera.position.y += (targetY + height - this.camera.position.y) * 0.16;
+      this.camera.position.z += (camZ - this.camera.position.z) * 0.16;
 
       this.camera.lookAt(targetX, targetY + 2.0, targetZ);
     } else {
       targetX = this.player.x;
-      targetY = this.player.y + 6.0;
+      targetY = this.player.y + 4.5;
       targetZ = this.player.z;
-      heading = this.player.angle;
 
       const dist = 32.0;
-      const height = 18.0;
+      const height = 14.0 + Math.sin(this.cameraPitch) * 14.0;
 
-      const camX = targetX - Math.sin(heading) * dist;
-      const camZ = targetZ - Math.cos(heading) * dist;
+      const camX = targetX - Math.sin(this.cameraYaw) * dist;
+      const camZ = targetZ - Math.cos(this.cameraYaw) * dist;
 
-      this.camera.position.x += (camX - this.camera.position.x) * 0.14;
-      this.camera.position.y += (targetY + height - this.camera.position.y) * 0.14;
-      this.camera.position.z += (camZ - this.camera.position.z) * 0.14;
+      this.camera.position.x += (camX - this.camera.position.x) * 0.18;
+      this.camera.position.y += (targetY + height - this.camera.position.y) * 0.18;
+      this.camera.position.z += (camZ - this.camera.position.z) * 0.18;
 
       this.camera.lookAt(targetX, targetY + 2.0, targetZ);
     }

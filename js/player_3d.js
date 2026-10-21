@@ -1,6 +1,7 @@
 /**
  * 3D Player Character Controller
- * Procedurally animated low-poly character with 3D walking, sprinting, and vehicle interaction.
+ * Open-source third-person character dynamics with camera-relative movement,
+ * smooth slerp directional rotation, jumping physics, and vehicle interaction.
  */
 
 class Player3D {
@@ -9,17 +10,21 @@ class Player3D {
     this.x = x;
     this.z = z;
     this.y = 0;
+    this.vy = 0; // Vertical velocity for jumping
+    this.isGrounded = true;
     this.angle = 0; // Heading angle around Y axis
-    this.radius = 4.5;
+    this.targetAngle = 0;
+    this.radius = 4.0;
 
+    // Movement speeds
     this.walkSpeed = 48.0;
-    this.sprintSpeed = 75.0;
+    this.sprintSpeed = 82.0;
 
     this.health = 100;
     this.currentVehicle = null;
 
+    // Animation stride cycle
     this.strideTimer = 0;
-    this.footToggle = false;
 
     this.meshGroup = new THREE.Group();
     this.buildCharacterMesh();
@@ -31,7 +36,7 @@ class Player3D {
   }
 
   buildCharacterMesh() {
-    // 1. Torso / Shirt (Teal)
+    // 1. Torso / Hawaiian Shirt (Teal)
     const torsoGeo = new THREE.BoxGeometry(4.0, 5.0, 2.5);
     const torsoMat = new THREE.MeshStandardMaterial({ color: 0x1abc9c, roughness: 0.7 });
     this.torso = new THREE.Mesh(torsoGeo, torsoMat);
@@ -87,10 +92,11 @@ class Player3D {
     this.meshGroup.rotation.y = this.angle;
   }
 
-  update(dt, cityMap, vehicles) {
+  update(dt, cityMap, vehicles, camera) {
     if (this.isInVehicle) {
       this.meshGroup.visible = false;
       this.x = this.currentVehicle.x;
+      this.y = this.currentVehicle.y;
       this.z = this.currentVehicle.z;
       this.angle = this.currentVehicle.angle;
       return;
@@ -98,50 +104,123 @@ class Player3D {
 
     this.meshGroup.visible = true;
 
+    // 1. Jumping & Gravity Physics
+    if (input.keys['Space'] && this.isGrounded) {
+      this.vy = 28.0;
+      this.isGrounded = false;
+    }
+
+    if (!this.isGrounded) {
+      this.y += this.vy * dt;
+      this.vy -= 78.0 * dt; // Gravity
+
+      if (this.y <= 0) {
+        this.y = 0;
+        this.vy = 0;
+        this.isGrounded = true;
+      }
+    }
+
+    // 2. Camera-Relative Movement Vector Calculation
     const move = input.getMovementVector();
-    const speed = input.isHandbrake ? this.sprintSpeed : this.walkSpeed;
+    let isMoving = false;
 
-    if (Math.abs(move.x) > 0.05 || Math.abs(move.y) > 0.05) {
-      // Facing angle (0 = forward in Z)
-      this.angle = Math.atan2(move.x, -move.y);
+    if (camera && (Math.abs(move.x) > 0.05 || Math.abs(move.y) > 0.05)) {
+      isMoving = true;
 
-      const newX = this.x + Math.sin(this.angle) * speed * dt;
-      const newZ = this.z + Math.cos(this.angle) * speed * dt;
+      // Extract horizontal camera forward & right vectors
+      const forward = new THREE.Vector3();
+      camera.getWorldDirection(forward);
+      forward.y = 0;
+      forward.normalize();
 
-      // 3D Building collision check
-      const colX = cityMap.checkCollision(newX, this.z, this.radius);
-      if (!colX.collided) this.x = newX;
+      const right = new THREE.Vector3();
+      right.crossVectors(camera.up, forward).negate().normalize();
 
-      const colZ = cityMap.checkCollision(this.x, newZ, this.radius);
-      if (!colZ.collided) this.z = newZ;
+      // Combine input with camera orientation
+      // move.y is -1 for forward (W), +1 for backward (S)
+      // move.x is -1 for left (A), +1 for right (D)
+      const moveDirection = new THREE.Vector3();
+      moveDirection.addScaledVector(forward, -move.y);
+      moveDirection.addScaledVector(right, move.x);
 
-      // Animate leg & arm stride swing
-      this.strideTimer += dt * (speed / 6.0);
-      const swing = Math.sin(this.strideTimer) * 0.45;
-      this.leftLeg.rotation.x = swing;
-      this.rightLeg.rotation.x = -swing;
-      this.leftArm.rotation.x = -swing;
-      this.rightArm.rotation.x = swing;
+      if (moveDirection.lengthSq() > 0.001) {
+        moveDirection.normalize();
+
+        // Calculate smooth target heading
+        this.targetAngle = Math.atan2(moveDirection.x, moveDirection.z);
+
+        // Smooth shortest-path rotation interpolation (Slerp-style)
+        let diff = this.targetAngle - this.angle;
+        while (diff < -Math.PI) diff += Math.PI * 2;
+        while (diff > Math.PI) diff -= Math.PI * 2;
+        this.angle += diff * Math.min(1.0, 16.0 * dt);
+
+        // Sprint detection (Shift key or mobile handbrake button held)
+        const isSprinting = input.isHandbrake || input.keys['ShiftLeft'] || input.keys['ShiftRight'];
+        const currentSpeed = isSprinting ? this.sprintSpeed : this.walkSpeed;
+
+        const newX = this.x + moveDirection.x * currentSpeed * dt;
+        const newZ = this.z + moveDirection.z * currentSpeed * dt;
+
+        // Collision with 3D buildings
+        const colX = cityMap.checkCollision(newX, this.z, this.radius);
+        if (!colX.collided) this.x = newX;
+
+        const colZ = cityMap.checkCollision(this.x, newZ, this.radius);
+        if (!colZ.collided) this.z = newZ;
+
+        // Animate stride swing
+        this.strideTimer += dt * (currentSpeed / 5.5);
+        const swing = Math.sin(this.strideTimer) * 0.55;
+        this.leftLeg.rotation.x = swing;
+        this.rightLeg.rotation.x = -swing;
+        this.leftArm.rotation.x = -swing;
+        this.rightArm.rotation.x = swing;
+      }
     } else {
-      // Idle pose
-      this.leftLeg.rotation.x = 0;
-      this.rightLeg.rotation.x = 0;
-      this.leftArm.rotation.x = 0;
-      this.rightArm.rotation.x = 0;
+      // Return smoothly to idle stance
+      this.leftLeg.rotation.x *= Math.pow(0.1, dt);
+      this.rightLeg.rotation.x *= Math.pow(0.1, dt);
+      this.leftArm.rotation.x *= Math.pow(0.1, dt);
+      this.rightArm.rotation.x *= Math.pow(0.1, dt);
     }
 
     // World clamp
     this.x = Math.max(30, Math.min(this.x, CONFIG.WORLD_WIDTH - 30));
     this.z = Math.max(30, Math.min(this.z, CONFIG.WORLD_HEIGHT - 30));
 
+    // Vehicle proximity check for action button prompt
+    this.checkVehicleProximity(vehicles);
+
     this.syncPosition();
+  }
+
+  checkVehicleProximity(vehicles) {
+    let closest = null;
+    let minDist = 26.0;
+
+    for (const v of vehicles) {
+      const d = Math.hypot(this.x - v.x, this.z - v.z);
+      if (d < minDist) {
+        minDist = d;
+        closest = v;
+      }
+    }
+
+    const btnLabel = document.getElementById('btn-action-label');
+    if (closest) {
+      if (btnLabel) btnLabel.textContent = `DRIVE`;
+    } else {
+      if (btnLabel && !this.isInVehicle) btnLabel.textContent = `ENTER`;
+    }
   }
 
   tryEnterVehicle(vehicles) {
     if (this.isInVehicle) return false;
 
     let closest = null;
-    let minDist = 24.0; // 3D units
+    let minDist = 26.0;
 
     for (const v of vehicles) {
       const d = Math.hypot(this.x - v.x, this.z - v.z);
@@ -156,7 +235,7 @@ class Player3D {
       closest.isDrivenByPlayer = true;
       audio.playDoor();
       storage.incrementStat('carsEntered');
-      gameHUD.showNotification(`Entered 3D ${closest.name}`);
+      gameHUD.showNotification(`Driving 3D ${closest.name}`);
       return true;
     }
     return false;
@@ -168,12 +247,13 @@ class Player3D {
     const v = this.currentVehicle;
     v.isDrivenByPlayer = false;
 
-    // Step out to the left door of the car in 3D
+    // Step out beside the driver's side door
     const sideX = -Math.cos(v.angle) * 12.0;
     const sideZ = Math.sin(v.angle) * 12.0;
 
     this.x = v.x + sideX;
     this.z = v.z + sideZ;
+    this.y = 0;
     this.currentVehicle = null;
 
     audio.playDoor();
@@ -184,4 +264,3 @@ class Player3D {
 if (typeof window !== 'undefined') {
   window.Player3D = Player3D;
 }
-

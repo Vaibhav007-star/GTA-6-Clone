@@ -7,8 +7,10 @@ class InputCoordinator {
   constructor() {
     this.keys = {};
     this.moveVector = { x: 0, y: 0 };
+    this.mouseDelta = { x: 0, y: 0 };
     this.isHandbrake = false;
     this.isHorn = false;
+    this.isMouseDown = false;
     this.actionTriggered = false;
 
     // Joystick state
@@ -23,12 +25,12 @@ class InputCoordinator {
     this.onMuteToggle = null;
 
     this.setupKeyboard();
+    this.setupMouseLook();
     this.setupTouchControls();
   }
 
   setupKeyboard() {
     window.addEventListener('keydown', (e) => {
-      // Audio resume on first user interaction
       audio.init();
       audio.resume();
 
@@ -57,7 +59,6 @@ class InputCoordinator {
         this.isHandbrake = true;
       }
 
-      // Prevent scrolling
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
         e.preventDefault();
       }
@@ -71,6 +72,45 @@ class InputCoordinator {
       if (e.code === 'KeyH') {
         this.isHorn = false;
       }
+    });
+  }
+
+  setupMouseLook() {
+    let lastX = 0;
+    let lastY = 0;
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.button === 0 || e.button === 2) {
+        this.isMouseDown = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      this.isMouseDown = false;
+      this.mouseDelta.x = 0;
+      this.mouseDelta.y = 0;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (document.pointerLockElement) {
+        this.mouseDelta.x = e.movementX || 0;
+        this.mouseDelta.y = e.movementY || 0;
+      } else if (this.isMouseDown) {
+        this.mouseDelta.x = e.clientX - lastX;
+        this.mouseDelta.y = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      } else {
+        this.mouseDelta.x = 0;
+        this.mouseDelta.y = 0;
+      }
+    });
+
+    // Optional pointer lock on canvas right click
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
     });
   }
 

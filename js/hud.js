@@ -65,3 +65,4 @@ if (typeof window !== 'undefined') {
   window.GameHUD = GameHUD;
   window.gameHUD = gameHUD;
 }
+

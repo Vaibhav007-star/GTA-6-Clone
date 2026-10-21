@@ -245,17 +245,18 @@ class Vehicle3D {
 
     // Steering
     this.steerAngle = 0;
+    const throttle = -move.y; // Forward is negative Y
+
     if (Math.abs(move.x) > 0.05) {
-      this.steerAngle = -move.x * 0.42; // Max 24 degrees
-      if (Math.abs(this.speed) > 4) {
-        const speedFactor = Math.min(1.0, Math.abs(this.speed) / (this.maxSpeed * 0.4));
-        const rev = this.speed >= 0 ? 1.0 : -1.0;
+      this.steerAngle = -move.x * 0.42; // Max 24 degrees front wheel turn
+      if (Math.abs(this.speed) > 1 || Math.abs(throttle) > 0.1) {
+        const speedFactor = Math.max(0.45, Math.min(1.0, Math.abs(this.speed) / (this.maxSpeed * 0.35)));
+        const rev = this.speed < -1 ? -1.0 : 1.0;
         this.angle -= move.x * this.turnRate * speedFactor * rev * dt;
       }
     }
 
     // Throttle / Braking
-    const throttle = -move.y; // Forward is negative Y
     if (throttle > 0.1) {
       this.speed += this.acceleration * throttle * dt;
       if (this.speed > this.maxSpeed) this.speed = this.maxSpeed;
