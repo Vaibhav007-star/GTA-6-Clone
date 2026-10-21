@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Retro City: Outlaw</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div id="game-container">
+    <!-- Main 2D Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Top In-Game HUD -->
+    <div id="hud-overlay">
+      <!-- Left: Mini-Map Radar & Cash -->
+      <div class="hud-left">
+        <div id="radar-wrapper">
+          <canvas id="radar-canvas" width="130" height="130"></canvas>
+        </div>
+        <div class="hud-info">
+          <div class="cash-badge">
+            <span id="hud-cash">$000,250</span>
+          </div>
+          <div id="hud-notification">Welcome to Retro City</div>
+        </div>
+      </div>
+
+      <!-- Right: Wanted Stars, Speed, Menu Button -->
+      <div class="hud-right">
+        <div class="wanted-stars" id="hud-stars">
+          <span class="star-icon">★</span>
+          <span class="star-icon">★</span>
+          <span class="star-icon">★</span>
+          <span class="star-icon">★</span>
+          <span class="star-icon">★</span>
+        </div>
+
+        <div id="hud-speed-box" style="display: none;">
+          <span id="hud-speed-val">0 MPH</span>
+        </div>
+
+        <button class="hud-btn-icon" id="btn-pause">PAUSE</button>
+      </div>
+    </div>
+
+    <!-- Touch Controls (Mobile / Tablet) -->
+    <div id="touch-controls">
+      <!-- Virtual Joystick -->
+      <div id="joystick-base">
+        <div id="joystick-knob"></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="touch-action-buttons">
+        <button class="touch-btn touch-btn-secondary" id="btn-horn">HORN</button>
+        <button class="touch-btn touch-btn-secondary" id="btn-handbrake">DRIFT</button>
+        <button class="touch-btn touch-btn-main" id="btn-action">
+          <span id="btn-action-icon">🚗</span>
+          <span id="btn-action-label">ENTER</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pause & Stats Modal -->
+    <div id="pause-modal">
+      <div class="modal-content">
+        <h2 class="modal-title">Retro City: Outlaw</h2>
+        <div class="stats-grid" id="pause-stats">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="controls-guide">
+          <h4>Desktop Controls:</h4>
+          <ul>
+            <li><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> Move / Steer</li>
+            <li><kbd>F</kbd> / <kbd>Enter</kbd> Enter / Exit Car</li>
+            <li><kbd>Space</kbd> Sprint / Handbrake Drift</li>
+            <li><kbd>H</kbd> Car Horn</li>
+            <li><kbd>M</kbd> Mute Audio</li>
+            <li><kbd>P</kbd> Pause Game</li>
+          </ul>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-primary" id="btn-resume">RESUME GAME</button>
+          <button class="btn-danger" id="btn-restart">RESET DATA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Scripts in Load Order -->
+  <script src="js/config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/vehicle.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/traffic.js"></script>
+  <script src="js/police.js"></script>
+  <script src="js/minimap.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
