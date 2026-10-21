@@ -1,19 +1,19 @@
-# Retro City: Outlaw
+# Retro City: Outlaw (3D Web Edition)
 
-A 2D top-down, retro open-world action-driving game built for the web with HTML5 Canvas, pure JavaScript, and procedural Web Audio.
+A 3D open-world retro action-driving game built for the web with Three.js (WebGL), procedural Canvas tactical radar, and procedural Web Audio.
 
 ---
 
-## 🎮 Features
-- **Open-World City Grid**: Procedural asphalt roads, sidewalks, zebra crosswalks, urban buildings, and green parks.
-- **On-Foot Player Mechanics**: Top-down character with animated walk/sprint stride cycles, health, and directional facing.
-- **Arcade Vehicle Physics**: Multiple drivable vehicles (Executive Sedan, Viper GT, Thunderbolt V8, Police Interceptor) with realistic acceleration, reverse, steering proportional to speed, and lateral drifting with persistent tire skid marks and smoke particles.
-- **Civilian AI Traffic & Pedestrians**: Cars following road avenues and pedestrians walking along sidewalks.
-- **Police Pursuit & Wanted System**: 5-Star wanted heat system. Colliding with civilian cars or police units triggers pursuit AI that calculates vectors to chase and ram the player with flashing sirens.
-- **Tactical Radar Mini-Map**: Real-time HUD radar showing roads, player position, parked cars, civilian traffic, and police units.
-- **100% Offline & Zero External Assets**: Procedural Web Audio API sound synthesizer (engine revs, sirens, horns, crashes, cash chimes) and procedural Canvas vector graphics. Zero external images or network dependencies.
-- **Local Persistence**: Saves cash balance, high scores, and gameplay statistics entirely on-device via `localStorage`.
-- **Multi-Device Input**: Full keyboard support for desktop, plus on-screen touch virtual joystick and action buttons for mobile/tablet.
+## 🎮 3D Features
+- **3D Open-World City**: Fully rendered in WebGL with asphalt roads, elevated sidewalks, crosswalks, 3D city skyscrapers with rooftop utilities, and Central Green Park with 3D trees and water fountain pond.
+- **Third-Person Dynamic Camera**: Cinematic follow camera tracking the player on foot and dynamically pulling back into a chase camera during high-speed driving.
+- **3D Vehicle Physics & Drifting**: Drivable 3D vehicles (Executive Sedan, Viper GT, Thunderbolt V8, Metro Interceptor Police Cruiser, Yellow Cab) with individual rotating 3D wheels, front steering angles, suspension body roll, and drifting.
+- **Dynamic 3D Lighting & Shadows**: Real-time directional sun casting soft shadows, 3D vehicle spotlights illuminating the street, and emergency strobe lights on police cruisers.
+- **Civilian AI Traffic & Pedestrians**: 3D civilian cars navigating avenues and pedestrians traversing sidewalks.
+- **5-Star Police Pursuit AI**: Interceptor cruisers spawn and pursue the player in 3D space with dual sirens and ramming maneuvers.
+- **Interactive Open-Source Missions**: In-game mission dispatcher for car theft deliveries, checkpoint sprints, and police evasion.
+- **In-Game Garage / Spawner**: Spawn any vehicle from `data/vehicles.json` with custom colors and stats right from the pause menu.
+- **100% Offline**: Includes offline local Three.js bundle (`js/libs/three.min.js`), offline Web Audio sound synthesizer, and `localStorage` persistence. Zero external network calls.
 
 ---
 
@@ -25,12 +25,14 @@ A 2D top-down, retro open-world action-driving game built for the web with HTML5
 | **Move / Steer** | `W` `A` `S` `D` or Arrow keys |
 | **Enter / Exit Vehicle** | `F` or `Enter` |
 | **Sprint / Handbrake Drift** | `Spacebar` |
+| **Punch / Shoot Weapon** | `Left Click` |
+| **Switch Weapons** | `1` `2` `3` `4` |
 | **Car Horn** | `H` |
 | **Mute Audio** | `M` |
-| **Pause / Stats Menu** | `P` |
+| **Pause / Garage / Missions** | `P` |
 
 ### Touch (Mobile / Tablet)
-- **Virtual Joystick** (Bottom-Left): Drag with thumb to steer/move.
+- **Virtual Joystick** (Bottom-Left): Steer and move in 3D.
 - **ENTER / EXIT** (Bottom-Right): Toggle vehicle entry.
 - **DRIFT / RUN**: Hold for handbrake drift or sprint.
 - **HORN**: Sound the car horn.
@@ -39,11 +41,10 @@ A 2D top-down, retro open-world action-driving game built for the web with HTML5
 
 ## 🚀 How to Run Locally
 
-You can run the game simply by opening `index.html` directly in any web browser (Chrome, Edge, Firefox, Safari), or using Python's built-in server:
-
+Serve with Python:
 ```powershell
 python -m http.server 8080
 ```
-
 Then visit:
-`http://localhost:8080`
+`http://localhost:8080` (or open in VS Code Live Server).
+
