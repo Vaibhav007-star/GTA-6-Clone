@@ -14,13 +14,15 @@ class TrafficManager3D {
     const colors = [0x8e44ad, 0xf39c12, 0x16a085, 0xd35400, 0x27ae60, 0x7f8c8d];
     const routes = [
       // 1. Ocean Drive Beachfront Cruise
-      { waypoints: [{ x: 2600, z: 550 }, { x: 2600, z: 2750 }], startX: 2600, startZ: 800, speed: 45 },
-      // 2. North Causeway Bridge (Downtown to Beach Island)
-      { waypoints: [{ x: 500, z: 800 }, { x: 2600, z: 800 }], startX: 1600, startZ: 800, speed: 52 },
+      { waypoints: [{ x: 2650, z: 550 }, { x: 2650, z: 2750 }], startX: 2650, startZ: 900, speed: 45 },
+      // 2. North Causeway Bridge (Downtown to Vice Point across Prawn Island)
+      { waypoints: [{ x: 500, z: 800 }, { x: 2650, z: 800 }], startX: 1650, startZ: 800, speed: 52 },
       // 3. Downtown Financial Avenue
-      { waypoints: [{ x: 950, z: 450 }, { x: 950, z: 2650 }], startX: 950, startZ: 1100, speed: 42 },
-      // 4. South Port Causeway Bridge
-      { waypoints: [{ x: 2600, z: 2200 }, { x: 950, z: 2200 }], startX: 2100, startZ: 2200, speed: 48 }
+      { waypoints: [{ x: 850, z: 450 }, { x: 850, z: 1950 }], startX: 850, startZ: 1100, speed: 42 },
+      // 4. Starfish Island Causeway Corridor
+      { waypoints: [{ x: 850, z: 1550 }, { x: 1750, z: 1550 }, { x: 2650, z: 1550 }], startX: 1750, startZ: 1550, speed: 46 },
+      // 5. South Port Causeway Bridge
+      { waypoints: [{ x: 2650, z: 2350 }, { x: 1200, z: 2350 }], startX: 2100, startZ: 2350, speed: 48 }
     ];
 
     routes.forEach((r, idx) => {
@@ -34,10 +36,10 @@ class TrafficManager3D {
 
     // 3D Pedestrians along Ocean Drive Palm Promenade
     const pCoords = [
-      { x: 2670, z: 900, dir: 1, min: 700, max: 1300 },
-      { x: 2670, z: 1500, dir: -1, min: 1350, max: 1950 },
-      { x: 2670, z: 2100, dir: 1, min: 1950, max: 2600 },
-      { x: 920, z: 900, dir: 1, min: 600, max: 1200 } // Downtown pedestrian
+      { x: 2720, z: 900, dir: 1, min: 700, max: 1300 },
+      { x: 2720, z: 1500, dir: -1, min: 1350, max: 1950 },
+      { x: 2720, z: 2100, dir: 1, min: 1950, max: 2600 },
+      { x: 820, z: 900, dir: 1, min: 600, max: 1200 } // Downtown pedestrian
     ];
 
     const pedGeo = new THREE.CylinderGeometry(1.2, 1.2, 7.0, 8);

@@ -4,56 +4,100 @@
       "id": "zone_ocean_drive",
       "name": "Ocean Drive & South Beach",
       "type": "Beachfront",
-      "bounds": { "minX": 2300, "minY": 200, "maxX": 3000, "maxY": 2900 },
+      "bounds": { "minX": 2350, "minY": 200, "maxX": 3120, "maxY": 2950 },
       "trafficDensity": "HIGH",
       "pedestrianDensity": "HIGH",
       "policeResponseTime": "FAST",
       "streetColor": "#222629",
-      "description": "Iconic coastal boulevard lined with swaying Florida palm trees, pastel Art Deco hotels, and white sandy beaches."
+      "description": "Iconic coastal boulevard lined with pastel Art Deco boutique hotels, swaying Florida palm trees, and wide golden sand beach."
     },
     {
-      "id": "zone_downtown",
-      "name": "Downtown Vice Skyscraper District",
-      "type": "Metropolitan",
-      "bounds": { "minX": 300, "minY": 200, "maxX": 1400, "maxY": 1800 },
-      "trafficDensity": "HIGH",
-      "pedestrianDensity": "HIGH",
-      "policeResponseTime": "RAPID",
-      "streetColor": "#1a1e22",
-      "description": "High-density glass towers, corporate skyscrapers with rooftop helipads, and tight 90-degree drift intersections."
+      "id": "zone_escobar_airport",
+      "name": "Escobar International Airport",
+      "type": "Aviation",
+      "bounds": { "minX": 250, "minY": 1950, "maxX": 1100, "maxY": 2950 },
+      "trafficDensity": "LOW",
+      "pedestrianDensity": "NONE",
+      "policeResponseTime": "HIGH",
+      "streetColor": "#181c20",
+      "description": "Crossing asphalt runways, passenger terminal concourse with jet bridges, ATC radar tower, and private aircraft hangars."
+    },
+    {
+      "id": "zone_viceport",
+      "name": "Viceport Cargo Harbor",
+      "type": "Industrial Port",
+      "bounds": { "minX": 1100, "minY": 1950, "maxX": 1480, "maxY": 2900 },
+      "trafficDensity": "MEDIUM",
+      "pedestrianDensity": "LOW",
+      "policeResponseTime": "SLOW",
+      "streetColor": "#2d3436",
+      "description": "Deep-water cargo container ship pier, rail gantry cranes, container stacks, chemical tank farm, and chop shop garage."
     },
     {
       "id": "zone_starfish",
-      "name": "Starfish Luxury Island",
+      "name": "Starfish Island",
       "type": "Exclusive Residential",
-      "bounds": { "minX": 1450, "minY": 1300, "maxX": 1850, "maxY": 1700 },
+      "bounds": { "minX": 1550, "minY": 1350, "maxX": 1950, "maxY": 1750 },
       "trafficDensity": "LOW",
       "pedestrianDensity": "LOW",
       "policeResponseTime": "FAST",
       "streetColor": "#2f3640",
-      "description": "Exclusive island villa enclave nestled in the bay with luxury mansions, fountains, swimming pools, and exotic hypercars."
+      "description": "Tommy Vercetti's sprawling luxury mansion estate with circular fountain driveway, wings, and backyard bayfront pool."
     },
     {
-      "id": "zone_port",
-      "name": "Vice Port & Chop Shop Docks",
-      "type": "Industrial",
-      "bounds": { "minX": 300, "minY": 1900, "maxX": 1400, "maxY": 2900 },
-      "trafficDensity": "MEDIUM",
+      "id": "zone_downtown",
+      "name": "Downtown Vice City",
+      "type": "Metropolitan Financial",
+      "bounds": { "minX": 250, "minY": 200, "maxX": 1350, "maxY": 1350 },
+      "trafficDensity": "HIGH",
+      "pedestrianDensity": "HIGH",
+      "policeResponseTime": "RAPID",
+      "streetColor": "#1a1e22",
+      "description": "Glass skyscraper towers with rooftop helipads, VCN transmission spire, and the Hyman Memorial Stadium at the northern tip."
+    },
+    {
+      "id": "zone_little_haiti",
+      "name": "Little Haiti & Little Havana",
+      "type": "Urban Neighborhood",
+      "bounds": { "minX": 250, "minY": 1350, "maxX": 1350, "maxY": 1950 },
+      "trafficDensity": "HIGH",
+      "pedestrianDensity": "MEDIUM",
+      "policeResponseTime": "MEDIUM",
+      "streetColor": "#2c3e50",
+      "description": "Vibrant Latin commercial blocks, taxi depots, storefronts, and alleyways connecting Downtown to the airport."
+    },
+    {
+      "id": "zone_prawn_island",
+      "name": "Prawn Island & Movie Studios",
+      "type": "Entertainment",
+      "bounds": { "minX": 1500, "minY": 650, "maxX": 1800, "maxY": 950 },
+      "trafficDensity": "LOW",
+      "pedestrianDensity": "NONE",
+      "policeResponseTime": "MEDIUM",
+      "streetColor": "#34495e",
+      "description": "InterGlobal Movie Studios soundstages and vintage colonial mansions on the north bay causeway."
+    },
+    {
+      "id": "zone_leaf_links",
+      "name": "Leaf Links Golf Club",
+      "type": "Recreation",
+      "bounds": { "minX": 1850, "minY": 1000, "maxX": 2150, "maxY": 1300 },
+      "trafficDensity": "NONE",
       "pedestrianDensity": "LOW",
       "policeResponseTime": "SLOW",
-      "streetColor": "#192a56",
-      "description": "Cargo container yards, freight docks, heavy cranes, and the underground chop-shop dropoff garage."
+      "streetColor": "#2ecc71",
+      "description": "Manicured golf fairways, sand traps, water hazards, and the Leaf Links Clubhouse."
     },
     {
       "id": "zone_causeways",
       "name": "Biscayne Bay Causeway Bridges",
       "type": "Highways",
-      "bounds": { "minX": 1350, "minY": 700, "maxX": 1950, "maxY": 2300 },
+      "bounds": { "minX": 1200, "minY": 750, "maxX": 2450, "maxY": 2400 },
       "trafficDensity": "HIGH",
       "pedestrianDensity": "NONE",
       "policeResponseTime": "MODERATE",
       "streetColor": "#273c75",
-      "description": "Long multi-lane bridge straightaways connecting the islands over the open ocean bay. Prime spot for top-speed testing and police roadblocks."
+      "description": "Four causeway bridges connecting the West Mainland, Starfish Island, and East Beach Island over turquoise bay water."
     }
   ]
 }

@@ -67,19 +67,20 @@ class RetroOutlaw3D {
   initWorld() {
     this.map = new CityMap3D(this.scene);
 
-    // Spawn Player on Ocean Drive (X: 2600, Z: 1500) overlooking the palms and beach
-    this.player = new Player3D(this.scene, 2600, 1500);
+    // Spawn Player on Ocean Drive (X: 2650, Z: 1450) overlooking the pastel hotels and beach
+    this.player = new Player3D(this.scene, 2650, 1450);
     this.vehicles = [];
 
-    // Parked Drivable Vehicles on Vice Island
+    // Parked Drivable Vehicles across authentic Vice City locations
     const spawns = [
-      { x: 2600, z: 1460, type: 'SPORTS', angle: 0, color: '#e74c3c' },        // Venom GT on Ocean Drive
-      { x: 2600, z: 1000, type: 'SPORTS', angle: Math.PI, color: '#f1c40f' },    // Yellow GT near Sunray
-      { x: 1700, z: 1430, type: 'MUSCLE', angle: Math.PI / 2, color: '#f39c12' },// Starfish Island Mansion
-      { x: 2600, z: 1800, type: 'SEDAN', angle: 0, color: '#2980b9' },          // Executive Sedan on Ocean Dr
-      { x: 1350, z: 800, type: 'POLICE', angle: -Math.PI / 2, color: '#1a1a1a' },// North Causeway Entrance
-      { x: 950, z: 1200, type: 'SEDAN', angle: 0, color: '#f39c12' },           // Taxi Cab Downtown
-      { x: 950, z: 2450, type: 'MUSCLE', angle: 0, color: '#e67e22' }            // Port Chop Shop Muscle Car
+      { x: 2650, z: 1400, type: 'SPORTS', angle: 0, color: '#e74c3c' },         // Venom GT on Ocean Drive
+      { x: 2650, z: 900, type: 'SPORTS', angle: Math.PI, color: '#f1c40f' },     // Yellow GT near The Beacon
+      { x: 1750, z: 1460, type: 'MUSCLE', angle: Math.PI / 2, color: '#ecf0f1' },// Tommy Vercetti's White Muscle Car
+      { x: 620, z: 2450, type: 'SPORTS', angle: 0.28, color: '#9b59b6' },        // Drag Supercar on Escobar Airport Runway
+      { x: 1250, z: 2050, type: 'MUSCLE', angle: 0, color: '#e67e22' },         // Heavy Muscle Car at Viceport Cargo Docks
+      { x: 850, z: 850, type: 'SEDAN', angle: 0, color: '#f39c12' },            // Taxi Cab Downtown Financial District
+      { x: 1200, z: 800, type: 'POLICE', angle: -Math.PI / 2, color: '#1a1a1a' },// Police Cruiser at North Causeway
+      { x: 2380, z: 2650, type: 'SEDAN', angle: 0, color: '#2980b9' }           // Marina Luxury Cruiser
     ];
 
     for (const s of spawns) {
@@ -202,7 +203,7 @@ class RetroOutlaw3D {
   start() {
     this.clock.start();
     this.loop();
-    gameHUD.showNotification('Welcome to Vice Island! Cruise Ocean Drive or cross the Causeway (WASD / Mouse)');
+    gameHUD.showNotification('Welcome to Vice City! Explore Ocean Drive, Starfish Mansion, Escobar Airport & Viceport (WASD / Mouse)');
   }
 
   loop() {
