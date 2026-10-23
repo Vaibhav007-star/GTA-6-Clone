@@ -328,7 +328,10 @@ class RetroOutlaw3D {
 
     // 4. Update AI Traffic
     this.traffic.update(dt, this.player, () => {
-      this.police.triggerCrime(1, 'Traffic Collision in 3D!');
+      // Only alert police if player is violently ramming traffic at high speeds (> 140 MPH)
+      if (this.player.isInVehicle && Math.abs(this.player.currentVehicle.speed) > 140) {
+        this.police.triggerCrime(1, 'High-Speed Reckless Driving!');
+      }
     });
 
     // 5. Update Police Pursuit

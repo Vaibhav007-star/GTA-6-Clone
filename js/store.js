@@ -388,3 +388,4 @@ if (typeof window !== 'undefined') {
   window.GameStore = GameStore;
   window.gameStore = gameStore;
 }
+
