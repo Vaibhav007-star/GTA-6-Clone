@@ -49,6 +49,7 @@
           <button class="pill-btn" id="btn-toggle-time" title="Toggle Day/Night Cycle (T)">🌅 DUSK</button>
           <button class="pill-btn" id="btn-toggle-cam" title="Toggle Camera View (C)">🎥 CHASE</button>
           <button class="pill-btn" id="btn-respray" title="Pay 'n' Spray Respray & Repair">🎨 RESPLAY</button>
+          <button class="pill-btn" id="btn-pill-store" onclick="if(window.gameStore) window.gameStore.toggle();" style="border-color: var(--neon-yellow); color: var(--neon-yellow);" title="Mega Store & Desi Bazaar (B)">🏪 STORE (B)</button>
         </div>
       </div>
 
@@ -88,7 +89,7 @@
         </div>
 
         <div style="display: flex; gap: 6px;">
-          <button class="hud-btn-icon btn-store-highlight" id="btn-open-store" title="Open Mega Store & Dealership (B)">🏪 STORE (B)</button>
+          <button class="hud-btn-icon btn-store-highlight" id="btn-open-store" onclick="if(window.gameStore) window.gameStore.toggle();" title="Open Mega Store & Dealership (B)">🏪 STORE (B)</button>
           <button class="hud-btn-icon" id="btn-pause">PAUSE / MENU</button>
         </div>
       </div>
@@ -130,15 +131,15 @@
             <span>Cash:</span>
             <strong id="store-cash-val">$000,250</strong>
           </div>
-          <button class="store-close-btn" id="btn-close-store">✕</button>
+          <button class="store-close-btn" id="btn-close-store" onclick="if(window.gameStore) window.gameStore.close();">✕</button>
         </div>
 
         <!-- Store Navigation Tabs -->
         <div class="store-nav-tabs">
-          <button class="store-tab-btn active" data-tab="vehicles">🚗 Cars & Bikes</button>
-          <button class="store-tab-btn" data-tab="weapons">🔫 Ammu-Nation</button>
-          <button class="store-tab-btn" data-tab="outfits">👕 Wardrobe</button>
-          <button class="store-tab-btn" data-tab="items">🎒 Gear & Health</button>
+          <button class="store-tab-btn active" data-tab="vehicles" onclick="if(window.gameStore) window.gameStore.switchTab('vehicles');">🚗 Cars & Bikes</button>
+          <button class="store-tab-btn" data-tab="weapons" onclick="if(window.gameStore) window.gameStore.switchTab('weapons');">🔫 Ammu-Nation</button>
+          <button class="store-tab-btn" data-tab="outfits" onclick="if(window.gameStore) window.gameStore.switchTab('outfits');">👕 Wardrobe</button>
+          <button class="store-tab-btn" data-tab="items" onclick="if(window.gameStore) window.gameStore.switchTab('items');">🎒 Gear & Health</button>
         </div>
 
         <!-- Dynamic Store Cards Grid -->

@@ -13,6 +13,10 @@ class StorageManager {
     return {
       cash: 250,
       highScore: 250,
+      owned_vehicles: ['sedan_standard'],
+      owned_weapons: ['unarmed', 'bat'],
+      owned_outfits: ['tommy_classic'],
+      player_outfit: 'tommy_classic',
       stats: {
         carsEntered: 0,
         copsEvaded: 0,
@@ -47,16 +51,37 @@ class StorageManager {
     }
   }
 
+  get(key) {
+    return this.data[key];
+  }
+
+  set(key, val) {
+    this.data[key] = val;
+    this.save();
+  }
+
   getCash() {
-    return this.data.cash;
+    return this.data.cash !== undefined ? this.data.cash : 250;
   }
 
   addCash(amount) {
-    this.data.cash = Math.max(0, this.data.cash + amount);
+    this.data.cash = Math.max(0, (this.data.cash || 0) + amount);
     if (this.data.cash > this.data.highScore) {
       this.data.highScore = this.data.cash;
     }
     this.save();
+    if (typeof gameHUD !== 'undefined' && gameHUD && gameHUD.updateCash) {
+      gameHUD.updateCash(this.data.cash);
+    }
+    return this.data.cash;
+  }
+
+  deductCash(amount) {
+    this.data.cash = Math.max(0, (this.data.cash || 0) - amount);
+    this.save();
+    if (typeof gameHUD !== 'undefined' && gameHUD && gameHUD.updateCash) {
+      gameHUD.updateCash(this.data.cash);
+    }
     return this.data.cash;
   }
 

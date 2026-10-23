@@ -41,7 +41,7 @@ class CombatSystem {
 
     // Left click attack / shoot
     window.addEventListener('mousedown', (e) => {
-      if (e.button === 0 && !e.target.closest('#hud-overlay, #pause-modal, #touch-controls')) {
+      if (e.button === 0 && !e.target.closest('#hud-overlay, #pause-modal, #touch-controls, #store-modal')) {
         this.triggerAttack();
       }
     });
@@ -59,6 +59,9 @@ class CombatSystem {
     const nameEl = document.getElementById('hud-weapon-name');
     if (el) el.textContent = this.currentWeapon.icon;
     if (nameEl) nameEl.textContent = this.currentWeapon.name;
+    if (window.retroGame3D && window.retroGame3D.player && window.retroGame3D.player.setWeapon) {
+      window.retroGame3D.player.setWeapon(this.currentWeapon.id);
+    }
   }
 
   triggerAttack() {
