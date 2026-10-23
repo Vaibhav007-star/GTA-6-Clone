@@ -87,7 +87,10 @@
           </div>
         </div>
 
-        <button class="hud-btn-icon" id="btn-pause">PAUSE / MENU</button>
+        <div style="display: flex; gap: 6px;">
+          <button class="hud-btn-icon btn-store-highlight" id="btn-open-store" title="Open Mega Store & Dealership (B)">🏪 STORE (B)</button>
+          <button class="hud-btn-icon" id="btn-pause">PAUSE / MENU</button>
+        </div>
       </div>
     </div>
 
@@ -112,6 +115,36 @@
           <span id="btn-action-icon">🚗</span>
           <span id="btn-action-label">ENTER</span>
         </button>
+      </div>
+    </div>
+
+    <!-- Mega Store & Desi Bazaar Modal -->
+    <div id="store-modal" style="display: none;">
+      <div class="store-content">
+        <div class="store-header">
+          <div class="store-title-wrap">
+            <h2 class="store-title">🏪 Vice City & Desi Bazaar</h2>
+            <small class="store-subtitle">Indian Vehicles, Ammu-Nation, Designer Clothes & Gear</small>
+          </div>
+          <div class="store-wallet">
+            <span>Cash:</span>
+            <strong id="store-cash-val">$000,250</strong>
+          </div>
+          <button class="store-close-btn" id="btn-close-store">✕</button>
+        </div>
+
+        <!-- Store Navigation Tabs -->
+        <div class="store-nav-tabs">
+          <button class="store-tab-btn active" data-tab="vehicles">🚗 Cars & Bikes</button>
+          <button class="store-tab-btn" data-tab="weapons">🔫 Ammu-Nation</button>
+          <button class="store-tab-btn" data-tab="outfits">👕 Wardrobe</button>
+          <button class="store-tab-btn" data-tab="items">🎒 Gear & Health</button>
+        </div>
+
+        <!-- Dynamic Store Cards Grid -->
+        <div class="store-grid" id="store-items-grid">
+          <!-- Populated dynamically by js/store.js -->
+        </div>
       </div>
     </div>
 
@@ -164,23 +197,24 @@
   <script src="js/libs/three.min.js"></script>
 
   <!-- Game Scripts in Load Order -->
-  <script src="js/config.js?v=2.3.0"></script>
-  <script src="js/storage.js?v=2.3.0"></script>
-  <script src="js/data_manager.js?v=2.3.0"></script>
-  <script src="js/hud.js?v=2.3.0"></script>
-  <script src="js/audio.js?v=2.3.0"></script>
-  <script src="js/input.js?v=2.3.0"></script>
-  <script src="js/minimap.js?v=2.3.0"></script>
-  <script src="js/combat.js?v=2.3.0"></script>
-  <script src="js/mission_system.js?v=2.3.0"></script>
+  <script src="js/config.js?v=2.4.0"></script>
+  <script src="js/storage.js?v=2.4.0"></script>
+  <script src="js/data_manager.js?v=2.4.0"></script>
+  <script src="js/hud.js?v=2.4.0"></script>
+  <script src="js/audio.js?v=2.4.0"></script>
+  <script src="js/input.js?v=2.4.0"></script>
+  <script src="js/minimap.js?v=2.4.0"></script>
+  <script src="js/combat.js?v=2.4.0"></script>
+  <script src="js/mission_system.js?v=2.4.0"></script>
+  <script src="js/store.js?v=2.4.0"></script>
 
   <!-- 3D Open-World Modules -->
-  <script src="js/map_3d.js?v=2.3.0"></script>
-  <script src="js/vehicle_3d.js?v=2.3.0"></script>
-  <script src="js/player_3d.js?v=2.3.0"></script>
-  <script src="js/traffic_3d.js?v=2.3.0"></script>
-  <script src="js/police_3d.js?v=2.3.0"></script>
-  <script src="js/game_3d.js?v=2.3.0"></script>
+  <script src="js/map_3d.js?v=2.4.0"></script>
+  <script src="js/vehicle_3d.js?v=2.4.0"></script>
+  <script src="js/player_3d.js?v=2.4.0"></script>
+  <script src="js/traffic_3d.js?v=2.4.0"></script>
+  <script src="js/police_3d.js?v=2.4.0"></script>
+  <script src="js/game_3d.js?v=2.4.0"></script>
 </body>
 </html>
 

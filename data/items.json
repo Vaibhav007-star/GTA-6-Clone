@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "id": "health_pack",
+      "name": "First Aid Medi-Kit",
+      "category": "Medical",
+      "description": "Full trauma medical kit. Instantly restores Tommy's health back to 100%!",
+      "price": 150,
+      "icon": "🩹",
+      "effect": "HEALTH_100"
+    },
+    {
+      "id": "body_armor",
+      "name": "Tactical Kevlar Vest",
+      "category": "Defense",
+      "description": "Heavy-duty ballistic Kevlar body armor. Absorbs gunshots and impacts (100% Armor).",
+      "price": 250,
+      "icon": "🛡️",
+      "effect": "ARMOR_100"
+    },
+    {
+      "id": "nos_canister",
+      "name": "NOS Nitro Refill Canister",
+      "category": "Vehicle",
+      "description": "High-pressure nitrous oxide refill canister. Instantly refills car NOS tank to 100%!",
+      "price": 120,
+      "icon": "🔥",
+      "effect": "NOS_100"
+    },
+    {
+      "id": "lawyer_card",
+      "name": "Corrupt Lawyer Bribe Card",
+      "category": "Legal",
+      "description": "One phone call to Ken Rosenberg. Bribes the Vice City Police Department to clear all wanted stars!",
+      "price": 500,
+      "icon": "⚖️",
+      "effect": "CLEAR_WANTED"
+    },
+    {
+      "id": "repair_kit",
+      "name": "Emergency Toolkit",
+      "category": "Vehicle",
+      "description": "Industrial roadside wrench set. Instantly repairs your current vehicle back to 100% health.",
+      "price": 200,
+      "icon": "🔧",
+      "effect": "REPAIR_CAR"
+    }
+  ]
+}

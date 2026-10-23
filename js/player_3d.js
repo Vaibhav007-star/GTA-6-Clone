@@ -129,8 +129,23 @@ class Player3D {
 
   setHeldWeapon(weaponId) {
     if (this.pistolMesh) this.pistolMesh.visible = (weaponId === 'pistol_9mm');
-    if (this.batMesh) this.batMesh.visible = (weaponId === 'baseball_bat');
-    if (this.shotgunMesh) this.shotgunMesh.visible = (weaponId === 'shotgun_pump' || weaponId === 'smg_micro');
+    if (this.batMesh) this.batMesh.visible = (weaponId === 'baseball_bat' || weaponId === 'bat');
+    if (this.shotgunMesh) this.shotgunMesh.visible = (weaponId === 'shotgun_pump' || weaponId === 'smg_micro' || weaponId === 'rifle_ak47');
+  }
+
+  setOutfit(outfitId) {
+    const o = dataManager.getOutfitById(outfitId);
+    if (!o) return;
+    this.currentOutfit = outfitId;
+    const sHex = parseInt(o.shirtColor.replace('#', '0x'));
+    const pHex = parseInt(o.pantsColor.replace('#', '0x'));
+
+    if (this.torso) this.torso.material.color.setHex(sHex);
+    if (this.leftLeg) this.leftLeg.material.color.setHex(pHex);
+    if (this.rightLeg) this.rightLeg.material.color.setHex(pHex);
+
+    storage.set('player_outfit', outfitId);
+    gameHUD.showNotification(`Outfit Equipped: ${o.name}`);
   }
 
   takeDamage(amount) {

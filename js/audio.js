@@ -392,11 +392,45 @@ class SoundEngine {
     noise.start(now + 0.1);
   }
 
-  playHorn() {
+  playHorn(typeKey = null) {
     if (!this.ctx || this.isMuted) return;
     this.resume();
-
     const now = this.ctx.currentTime;
+
+    if (typeKey === 'DESI_TRUCK') {
+      // Iconic Indian "Horn OK Please" multi-tone musical truck horn!
+      [293.66, 369.99, 440.00, 587.33].forEach((f, i) => {
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'sawtooth';
+        o.frequency.setValueAtTime(f, now + i * 0.08);
+        g.gain.setValueAtTime(0.14, now + i * 0.08);
+        g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.16);
+        o.connect(g);
+        g.connect(this.ctx.destination);
+        o.start(now + i * 0.08);
+        o.stop(now + i * 0.08 + 0.16);
+      });
+      return;
+    }
+
+    if (typeKey === 'AUTO_RICKSHAW') {
+      // 2-stroke buzzing high beep-beep!
+      [780, 840].forEach(f => {
+        const o = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        o.type = 'square';
+        o.frequency.setValueAtTime(f, now);
+        g.gain.setValueAtTime(0.12, now);
+        g.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        o.connect(g);
+        g.connect(this.ctx.destination);
+        o.start(now);
+        o.stop(now + 0.2);
+      });
+      return;
+    }
+
     const osc1 = this.ctx.createOscillator();
     const osc2 = this.ctx.createOscillator();
     const gain = this.ctx.createGain();

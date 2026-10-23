@@ -68,7 +68,8 @@ class InputCoordinator {
       }
       if (e.code === 'KeyH') {
         this.isHorn = true;
-        audio.playHorn();
+        const car = (window.retroGame3D && window.retroGame3D.player && window.retroGame3D.player.currentVehicle) ? window.retroGame3D.player.currentVehicle : null;
+        audio.playHorn(car ? car.typeKey : null);
       }
       if (e.code === 'Space') {
         this.isHandbrake = true;

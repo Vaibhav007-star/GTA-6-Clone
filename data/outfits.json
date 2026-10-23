@@ -1,0 +1,54 @@
+{
+  "outfits": [
+    {
+      "id": "tommy_classic",
+      "name": "Vice City Hawaiian",
+      "category": "Classic",
+      "description": "Iconic Vice City teal tropical palm shirt with classic blue denim jeans and white sneakers.",
+      "price": 0,
+      "shirtColor": "#1abc9c",
+      "pantsColor": "#2980b9",
+      "icon": "🌴"
+    },
+    {
+      "id": "desi_kurta",
+      "name": "Mumbai Don Pathani Kurta",
+      "category": "Indian Desi",
+      "description": "Sleek jet-black Indian silk Pathani Kurta with golden watch, dark sunglasses, and black salwar.",
+      "price": 400,
+      "shirtColor": "#111111",
+      "pantsColor": "#1a1a1a",
+      "icon": "👑"
+    },
+    {
+      "id": "mafia_suit",
+      "name": "Scarface White Tuxedo",
+      "category": "Formal Mafia",
+      "description": "Prestigious double-breasted white mafia suit with crimson red silk pocket square and polished oxford shoes.",
+      "price": 750,
+      "shirtColor": "#ffffff",
+      "pantsColor": "#f5f6fa",
+      "icon": "🤵"
+    },
+    {
+      "id": "biker_leather",
+      "name": "Bullet Biker Leather",
+      "category": "Street",
+      "description": "Rugged distressed brown leather motorcycle jacket with metal zippers and heavy riding boots.",
+      "price": 350,
+      "shirtColor": "#533827",
+      "pantsColor": "#2c3e50",
+      "icon": "🏍️"
+    },
+    {
+      "id": "tactical_camo",
+      "name": "Desert Commando",
+      "category": "Military",
+      "description": "Reinforced military desert camouflage tactical combat vest and heavy multi-pocket cargo pants.",
+      "price": 600,
+      "shirtColor": "#d4a373",
+      "pantsColor": "#a3704c",
+      "icon": "🪖"
+    }
+  ]
+}

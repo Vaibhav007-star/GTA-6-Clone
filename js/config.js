@@ -95,6 +95,71 @@ const CONFIG = {
       friction: 130,
       driftFriction: 0.89,
       defaultColor: '#1a1a1a'
+    },
+    THAR: {
+      name: 'Mahindra Thar 4x4',
+      width: 38,
+      height: 66,
+      maxSpeed: 440,
+      reverseSpeed: -130,
+      acceleration: 340,
+      braking: 450,
+      turnRate: 3.0,
+      friction: 120,
+      driftFriction: 0.88,
+      defaultColor: '#111111'
+    },
+    AUTO_RICKSHAW: {
+      name: 'Tuk-Tuk Auto Rickshaw',
+      width: 30,
+      height: 52,
+      maxSpeed: 360,
+      reverseSpeed: -110,
+      acceleration: 320,
+      braking: 420,
+      turnRate: 3.9,
+      friction: 115,
+      driftFriction: 0.92,
+      defaultColor: '#f1c40f'
+    },
+    BULLET_350: {
+      name: 'Royal Enfield Bullet 350',
+      width: 20,
+      height: 48,
+      maxSpeed: 470,
+      reverseSpeed: -70,
+      acceleration: 410,
+      braking: 480,
+      turnRate: 3.6,
+      friction: 130,
+      driftFriction: 0.85,
+      defaultColor: '#111111'
+    },
+    SCORPIO: {
+      name: 'Scorpio Classic Boss',
+      width: 39,
+      height: 72,
+      maxSpeed: 450,
+      reverseSpeed: -130,
+      acceleration: 330,
+      braking: 440,
+      turnRate: 2.7,
+      friction: 115,
+      driftFriction: 0.87,
+      defaultColor: '#ffffff'
+    },
+    DESI_TRUCK: {
+      name: 'Tata Highway Truck',
+      width: 44,
+      height: 95,
+      maxSpeed: 330,
+      reverseSpeed: -90,
+      acceleration: 240,
+      braking: 380,
+      turnRate: 2.1,
+      friction: 110,
+      driftFriction: 0.94,
+      defaultColor: '#e67e22'
     }
   },
 

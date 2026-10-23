@@ -96,12 +96,13 @@ class RetroOutlaw3D {
 
     // Parked Drivable Vehicles across authentic Vice City locations
     const spawns = [
-      { x: 2650, z: 1400, type: 'SPORTS', angle: 0, color: '#e74c3c' },         // Venom GT on Ocean Drive
-      { x: 2650, z: 900, type: 'SPORTS', angle: Math.PI, color: '#f1c40f' },     // Yellow GT near The Beacon
+      { x: 2650, z: 1400, type: 'THAR', angle: 0, color: '#111111' },           // Mahindra Thar 4x4 on Ocean Drive
+      { x: 2650, z: 1350, type: 'BULLET_350', angle: 0, color: '#bdc3c7' },     // Royal Enfield Bullet 350 on Ocean Drive
+      { x: 850, z: 1550, type: 'AUTO_RICKSHAW', angle: Math.PI / 2, color: '#f1c40f' }, // Tuk-Tuk Auto Rickshaw in Little Havana
+      { x: 850, z: 850, type: 'SCORPIO', angle: 0, color: '#ffffff' },          // Scorpio Classic Boss in Downtown
+      { x: 1250, z: 2200, type: 'DESI_TRUCK', angle: 0, color: '#e67e22' },      // Tata Highway Truck (Horn OK Please) at Viceport
       { x: 1750, z: 1460, type: 'MUSCLE', angle: Math.PI / 2, color: '#ecf0f1' },// Tommy Vercetti's White Muscle Car
       { x: 620, z: 2450, type: 'SPORTS', angle: 0.28, color: '#9b59b6' },        // Drag Supercar on Escobar Airport Runway
-      { x: 1250, z: 2050, type: 'MUSCLE', angle: 0, color: '#e67e22' },         // Heavy Muscle Car at Viceport Cargo Docks
-      { x: 850, z: 850, type: 'SEDAN', angle: 0, color: '#f39c12' },            // Taxi Cab Downtown Financial District
       { x: 1200, z: 800, type: 'POLICE', angle: -Math.PI / 2, color: '#1a1a1a' },// Police Cruiser at North Causeway
       { x: 2380, z: 2650, type: 'SEDAN', angle: 0, color: '#2980b9' }           // Marina Luxury Cruiser
     ];
