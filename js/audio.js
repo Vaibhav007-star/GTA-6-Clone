@@ -39,23 +39,44 @@ class SoundEngine {
     this.radioInterval = null;
     this.radioGain = null;
     this.radioStep = 0;
+
+    this.setupAutoUnlock();
+  }
+
+  setupAutoUnlock() {
+    if (typeof window === 'undefined') return;
+    const unlock = () => {
+      this.init();
+      this.resume();
+    };
+    ['click', 'keydown', 'touchstart', 'pointerdown', 'mousedown'].forEach(evt => {
+      window.addEventListener(evt, unlock, { passive: true });
+    });
   }
 
   init() {
-    if (this.ctx) return;
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AudioCtx();
-      this.initEngineSynth();
-      this.initRadioGain();
-    } catch (e) {
-      console.warn('Web Audio API not supported on this browser:', e);
+    if (!this.ctx) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          this.ctx = new AudioCtx();
+          this.initEngineSynth();
+          this.initRadioGain();
+        }
+      } catch (e) {
+        console.warn('Web Audio API not supported on this browser:', e);
+      }
     }
+    this.resume();
   }
 
   resume() {
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().then(() => {
+        if (!this.radioInterval && this.currentStation.id !== 'off') {
+          this.startRadio();
+        }
+      }).catch(() => {});
     }
   }
 
@@ -67,7 +88,7 @@ class SoundEngine {
       this.stopSiren();
     } else {
       if (this.radioGain && this.currentStation.id !== 'off') {
-        this.radioGain.gain.setValueAtTime(0.11, this.ctx.currentTime);
+        this.radioGain.gain.setValueAtTime(0.40, this.ctx.currentTime);
       }
     }
     return this.isMuted;
@@ -120,9 +141,11 @@ class SoundEngine {
 
   initRadioGain() {
     if (!this.ctx) return;
-    this.radioGain = this.ctx.createGain();
-    this.radioGain.gain.setValueAtTime(0.11, this.ctx.currentTime);
-    this.radioGain.connect(this.ctx.destination);
+    if (!this.radioGain) {
+      this.radioGain = this.ctx.createGain();
+      this.radioGain.gain.setValueAtTime(0.40, this.ctx.currentTime);
+      this.radioGain.connect(this.ctx.destination);
+    }
     this.startRadio();
   }
 
@@ -139,7 +162,23 @@ class SoundEngine {
     if (station.id === 'off') {
       if (this.radioGain) this.radioGain.gain.setValueAtTime(0, this.ctx.currentTime);
     } else {
-      if (this.radioGain && !this.isMuted) this.radioGain.gain.setValueAtTime(0.11, this.ctx.currentTime);
+      if (this.radioGain && !this.isMuted) this.radioGain.gain.setValueAtTime(0.40, this.ctx.currentTime);
+      this.playRadioTuningChime();
+    }
+
+    return station;
+  }
+
+  playStation(index) {
+    this.init();
+    this.resume();
+    this.currentStationIndex = index % this.radioStations.length;
+    const station = this.currentStation;
+
+    if (station.id === 'off') {
+      if (this.radioGain) this.radioGain.gain.setValueAtTime(0, this.ctx.currentTime);
+    } else {
+      if (this.radioGain && !this.isMuted) this.radioGain.gain.setValueAtTime(0.40, this.ctx.currentTime);
       this.playRadioTuningChime();
     }
 
@@ -148,16 +187,21 @@ class SoundEngine {
 
   playRadioTuningChime() {
     if (!this.ctx || this.isMuted) return;
+    this.resume();
     const now = this.ctx.currentTime;
 
     // Tuning static sweep
     const burst = this.ctx.createBufferSource();
-    const bSize = Math.floor(this.ctx.sampleRate * 0.06);
+    const bSize = Math.floor(this.ctx.sampleRate * 0.08);
     const buf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
     const data = buf.getChannelData(0);
-    for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.15;
+    for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.20;
     burst.buffer = buf;
-    burst.connect(this.ctx.destination);
+    const burstGain = this.ctx.createGain();
+    burstGain.gain.setValueAtTime(0.18, now);
+    burstGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    burst.connect(burstGain);
+    burstGain.connect(this.ctx.destination);
     burst.start(now);
 
     // Haryanvi Tumba pluck tone
@@ -165,12 +209,12 @@ class SoundEngine {
     const g = this.ctx.createGain();
     tone.type = 'triangle';
     tone.frequency.setValueAtTime(587.33, now + 0.03); // D5
-    g.gain.setValueAtTime(0.12, now + 0.03);
-    g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    g.gain.setValueAtTime(0.28, now + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
     tone.connect(g);
     g.connect(this.ctx.destination);
     tone.start(now + 0.03);
-    tone.stop(now + 0.15);
+    tone.stop(now + 0.22);
   }
 
   startRadio() {
@@ -180,6 +224,10 @@ class SoundEngine {
     const stepTime = 120; // ms per 16th note
     this.radioInterval = setInterval(() => {
       if (!this.ctx || this.isMuted || this.currentStation.id === 'off') return;
+      if (this.ctx.state !== 'running') {
+        this.ctx.resume().catch(() => {});
+        return;
+      }
       this.tickRadioStep();
       this.radioStep = (this.radioStep + 1) % 32;
     }, stepTime);
@@ -281,23 +329,23 @@ class SoundEngine {
    * HARYANVI INSTRUMENT SYNTHESIZERS
    * ========================================================================= */
 
-  synthDholakBass(time, startFreq = 115, endFreq = 40) {
+  synthDholakBass(time, startFreq = 130, endFreq = 42) {
     if (!this.ctx || !this.radioGain) return;
     const osc = this.ctx.createOscillator();
     const g = this.ctx.createGain();
 
     osc.type = 'sine';
     osc.frequency.setValueAtTime(startFreq, time);
-    osc.frequency.exponentialRampToValueAtTime(endFreq, time + 0.12);
+    osc.frequency.exponentialRampToValueAtTime(endFreq, time + 0.14);
 
-    g.gain.setValueAtTime(0.20, time);
-    g.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+    g.gain.setValueAtTime(0.52, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.14);
 
     osc.connect(g);
     g.connect(this.radioGain);
 
     osc.start(time);
-    osc.stop(time + 0.12);
+    osc.stop(time + 0.14);
   }
 
   synthDholakSlap(time) {
@@ -307,25 +355,25 @@ class SoundEngine {
     const ping = this.ctx.createOscillator();
     const pg = this.ctx.createGain();
     ping.type = 'triangle';
-    ping.frequency.setValueAtTime(1250, time);
-    ping.frequency.exponentialRampToValueAtTime(600, time + 0.05);
-    pg.gain.setValueAtTime(0.12, time);
-    pg.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+    ping.frequency.setValueAtTime(1400, time);
+    ping.frequency.exponentialRampToValueAtTime(700, time + 0.06);
+    pg.gain.setValueAtTime(0.28, time);
+    pg.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
     ping.connect(pg);
     pg.connect(this.radioGain);
     ping.start(time);
-    ping.stop(time + 0.05);
+    ping.stop(time + 0.06);
 
     // Acoustic skin snap noise
     const bSize = Math.floor(this.ctx.sampleRate * 0.04);
     const buf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
     const data = buf.getChannelData(0);
-    for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.15;
+    for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.25;
 
     const noise = this.ctx.createBufferSource();
     noise.buffer = buf;
     const g = this.ctx.createGain();
-    g.gain.setValueAtTime(0.09, time);
+    g.gain.setValueAtTime(0.22, time);
     g.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
 
     noise.connect(g);
@@ -339,18 +387,19 @@ class SoundEngine {
     const g = this.ctx.createGain();
     const filter = this.ctx.createBiquadFilter();
 
-    // Haryanvi reed/pungi sound
+    // Haryanvi reed / pungi sound
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(freq, time);
     // Subtle Indian microtonal glide / vibrato
-    osc.frequency.linearRampToValueAtTime(freq * 1.015, time + dur * 0.5);
+    osc.frequency.linearRampToValueAtTime(freq * 1.018, time + dur * 0.4);
     osc.frequency.linearRampToValueAtTime(freq, time + dur);
 
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(1400, time);
-    filter.Q.setValueAtTime(3.5, time);
+    // Resonant lowpass filter preserves melodic notes (200-600Hz) while keeping authentic reed edge
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2600, time);
+    filter.Q.setValueAtTime(2.2, time);
 
-    g.gain.setValueAtTime(0.065, time);
+    g.gain.setValueAtTime(0.30, time);
     g.gain.exponentialRampToValueAtTime(0.001, time + dur);
 
     osc.connect(filter);
@@ -367,17 +416,17 @@ class SoundEngine {
     const g = this.ctx.createGain();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq * 1.2, time);
-    osc.frequency.exponentialRampToValueAtTime(freq, time + 0.08);
+    osc.frequency.setValueAtTime(freq * 1.3, time);
+    osc.frequency.exponentialRampToValueAtTime(freq, time + 0.09);
 
-    g.gain.setValueAtTime(0.18, time);
-    g.gain.exponentialRampToValueAtTime(0.001, time + 0.28);
+    g.gain.setValueAtTime(0.48, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.32);
 
     osc.connect(g);
     g.connect(this.radioGain);
 
     osc.start(time);
-    osc.stop(time + 0.28);
+    osc.stop(time + 0.32);
   }
 
   synthBrassStab(time, freq) {
@@ -385,24 +434,29 @@ class SoundEngine {
     const osc1 = this.ctx.createOscillator();
     const osc2 = this.ctx.createOscillator();
     const g = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
 
     osc1.type = 'sawtooth';
     osc1.frequency.setValueAtTime(freq, time);
 
     osc2.type = 'sawtooth';
-    osc2.frequency.setValueAtTime(freq * 1.498, time);
+    osc2.frequency.setValueAtTime(freq * 1.5, time); // Fifth harmony
 
-    g.gain.setValueAtTime(0.12, time);
-    g.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2400, time);
 
-    osc1.connect(g);
-    osc2.connect(g);
+    g.gain.setValueAtTime(0.35, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.18);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(g);
     g.connect(this.radioGain);
 
     osc1.start(time);
     osc2.start(time);
-    osc1.stop(time + 0.16);
-    osc2.stop(time + 0.16);
+    osc1.stop(time + 0.18);
+    osc2.stop(time + 0.18);
   }
 
   /* =========================================================================

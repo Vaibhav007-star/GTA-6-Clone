@@ -39,7 +39,7 @@
 
       <!-- Center: Haryanvi Desi Music & Atmosphere Controls -->
       <div class="hud-center">
-        <div id="hud-radio-badge" title="Click or Press R to Switch Haryanvi Songs">
+        <div id="hud-radio-badge" onclick="if(window.retroGame3D) window.retroGame3D.toggleRadio(); else if(window.audio) window.audio.nextStation();" title="Click or Press R to Switch Haryanvi Songs">
           <span class="radio-waves">🪕</span>
           <span id="hud-radio-name">HR 26 Haryanvi Ragini</span>
           <small id="hud-radio-genre">(Desi Dholak & Been)</small>

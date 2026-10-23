@@ -85,21 +85,6 @@ class InputCoordinator {
       if (e.code === 'Space') {
         this.isHandbrake = false;
       }
-      if (e.code === 'KeyR') {
-        if (!e.repeat && this.onRadioToggle) {
-          this.onRadioToggle();
-        }
-      }
-      if (e.code === 'KeyT') {
-        if (!e.repeat && this.onTimeToggle) {
-          this.onTimeToggle();
-        }
-      }
-      if (e.code === 'KeyC') {
-        if (!e.repeat && this.onCamToggle) {
-          this.onCamToggle();
-        }
-      }
       if (e.code === 'KeyH') {
         this.isHorn = false;
       }
