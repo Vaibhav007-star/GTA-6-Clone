@@ -101,6 +101,7 @@ class CityMap3D {
     this.buildFloridaPalmTrees();
     this.buildStreetlights();
     this.buildCashPickups();
+    this.buildStuntRamps();
   }
 
   /* =========================================================================
@@ -1366,6 +1367,59 @@ class CityMap3D {
         collected: false
       });
     }
+  }
+
+  buildStuntRamps() {
+    this.stuntRamps = [
+      { x: 620, z: 2550, angle: 0.28, name: 'Escobar Runway Super Launch' },
+      { x: 1550, z: 1550, angle: Math.PI / 2, name: 'Starfish Canal Leap' },
+      { x: 2420, z: 2650, angle: -Math.PI / 2, name: 'Ocean Beach Marina Jump' },
+      { x: 850, z: 750, angle: 0, name: 'Downtown Financial Rooftop Launch' }
+    ];
+
+    const rampMat = new THREE.MeshStandardMaterial({ color: 0xf1c40f, roughness: 0.5 });
+    const stripeMat = new THREE.MeshBasicMaterial({ color: 0x1e272e });
+
+    for (const r of this.stuntRamps) {
+      const rampGroup = new THREE.Group();
+
+      // Sloped wedge box
+      const wGeo = new THREE.BoxGeometry(16, 5.5, 24);
+      const wedge = new THREE.Mesh(wGeo, rampMat);
+      wedge.rotation.x = -0.22;
+      wedge.position.set(0, 2.5, 0);
+      wedge.castShadow = true;
+      wedge.receiveShadow = true;
+      rampGroup.add(wedge);
+
+      // Warning hazard stripes
+      for (let s = -8; s <= 8; s += 4) {
+        const strGeo = new THREE.PlaneGeometry(16, 1.8);
+        const str = new THREE.Mesh(strGeo, stripeMat);
+        str.rotation.x = -Math.PI / 2 - 0.22;
+        str.position.set(0, 2.8 + s * 0.18, s);
+        rampGroup.add(str);
+      }
+
+      rampGroup.position.set(r.x, 0, r.z);
+      rampGroup.rotation.y = r.angle;
+      this.group.add(rampGroup);
+    }
+  }
+
+  checkStuntRamp(x, z) {
+    if (!this.stuntRamps) return false;
+    for (const r of this.stuntRamps) {
+      if (Math.hypot(x - r.x, z - r.z) < 18) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  checkPayAndSpray(x, z) {
+    // Chop Shop Garage trigger coordinates
+    return Math.hypot(x - 1250, z - 2050) < 32;
   }
 
   /* =========================================================================

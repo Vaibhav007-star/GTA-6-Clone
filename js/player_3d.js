@@ -21,13 +21,16 @@ class Player3D {
     this.sprintSpeed = 82.0;
 
     this.health = 100;
+    this.armor = 100;
     this.currentVehicle = null;
 
     // Animation stride cycle
     this.strideTimer = 0;
 
     this.meshGroup = new THREE.Group();
+    this.weaponGroup = new THREE.Group();
     this.buildCharacterMesh();
+    this.buildWeaponMeshes();
     this.scene.add(this.meshGroup);
   }
 
@@ -84,7 +87,76 @@ class Player3D {
     this.rightArm.position.set(2.6, 5.0, 0);
     this.meshGroup.add(this.rightArm);
 
+    // Attach weapon mount to right hand
+    this.weaponGroup.position.set(0, -2.2, 0.8);
+    this.rightArm.add(this.weaponGroup);
+
     this.syncPosition();
+  }
+
+  buildWeaponMeshes() {
+    // 1. Pistol Mesh
+    const gunMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8, roughness: 0.2 });
+    this.pistolMesh = new THREE.Group();
+    const barrel = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.0, 3.2), gunMat);
+    barrel.position.set(0, 0, 1.2);
+    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.8, 0.9), gunMat);
+    grip.position.set(0, -0.9, 0);
+    this.pistolMesh.add(barrel);
+    this.pistolMesh.add(grip);
+    this.pistolMesh.visible = false;
+    this.weaponGroup.add(this.pistolMesh);
+
+    // 2. Baseball Bat Mesh
+    const batMat = new THREE.MeshStandardMaterial({ color: 0xd35400, roughness: 0.8 });
+    this.batMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.7, 7.5, 8), batMat);
+    this.batMesh.rotation.x = Math.PI / 4;
+    this.batMesh.position.set(0, 1.5, 1.5);
+    this.batMesh.visible = false;
+    this.weaponGroup.add(this.batMesh);
+
+    // 3. Shotgun / SMG Mesh
+    this.shotgunMesh = new THREE.Group();
+    const sBarrel = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.2, 6.2), gunMat);
+    sBarrel.position.set(0, 0, 2.5);
+    const sStock = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.6, 2.8), batMat);
+    sStock.position.set(0, -0.6, -1.2);
+    this.shotgunMesh.add(sBarrel);
+    this.shotgunMesh.add(sStock);
+    this.shotgunMesh.visible = false;
+    this.weaponGroup.add(this.shotgunMesh);
+  }
+
+  setHeldWeapon(weaponId) {
+    if (this.pistolMesh) this.pistolMesh.visible = (weaponId === 'pistol_9mm');
+    if (this.batMesh) this.batMesh.visible = (weaponId === 'baseball_bat');
+    if (this.shotgunMesh) this.shotgunMesh.visible = (weaponId === 'shotgun_pump' || weaponId === 'smg_micro');
+  }
+
+  takeDamage(amount) {
+    if (this.armor > 0) {
+      const absorbed = Math.min(this.armor, amount);
+      this.armor -= absorbed;
+      amount -= absorbed;
+    }
+    this.health = Math.max(0, this.health - amount);
+    audio.playPunch();
+
+    if (window.gameHUD) {
+      window.gameHUD.updateHealthArmor(this.health, this.armor);
+    }
+
+    if (this.health <= 0) {
+      // Wasted! Respawn at Ocean Beach
+      this.health = 100;
+      this.armor = 50;
+      this.x = 2650;
+      this.z = 1450;
+      this.y = 0;
+      storage.deductCash(100);
+      gameHUD.updateCash(storage.getCash());
+      gameHUD.showNotification('WASTED! Admitted to Vice Beach Hospital (-$100)');
+    }
   }
 
   syncPosition() {

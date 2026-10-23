@@ -13,7 +13,7 @@
 
     <!-- Top In-Game HUD -->
     <div id="hud-overlay">
-      <!-- Left: Mini-Map Radar & Cash -->
+      <!-- Left: Mini-Map Radar, Cash, Health & Armor -->
       <div class="hud-left">
         <div id="radar-wrapper">
           <canvas id="radar-canvas" width="130" height="130"></canvas>
@@ -22,12 +22,37 @@
           <div class="cash-badge">
             <span id="hud-cash">$000,250</span>
           </div>
-          <div id="hud-notification">Welcome to Retro City</div>
+
+          <!-- Health & Armor Status Bars -->
+          <div class="status-bars">
+            <div class="bar-container hp-container" title="Player Health">
+              <div class="bar-fill hp-fill" id="hud-hp-bar" style="width: 100%;"></div>
+            </div>
+            <div class="bar-container armor-container" title="Body Armor">
+              <div class="bar-fill armor-fill" id="hud-armor-bar" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <div id="hud-notification">Welcome to Vice City</div>
         </div>
       </div>
 
-      <!-- Right: Wanted Stars, Speed, Menu Button -->
-      <!-- Right: Wanted Stars, Speed, Weapon, Menu Button -->
+      <!-- Center: 80s Vice City Radio & Atmosphere Controls -->
+      <div class="hud-center">
+        <div id="hud-radio-badge" title="Click or Press R to Switch Radio Stations">
+          <span class="radio-waves">♪</span>
+          <span id="hud-radio-name">Flash FM</span>
+          <small id="hud-radio-genre">(80s Pop)</small>
+        </div>
+
+        <div class="quick-pill-row">
+          <button class="pill-btn" id="btn-toggle-time" title="Toggle Day/Night Cycle (T)">🌅 DUSK</button>
+          <button class="pill-btn" id="btn-toggle-cam" title="Toggle Camera View (C)">🎥 CHASE</button>
+          <button class="pill-btn" id="btn-respray" title="Pay 'n' Spray Respray & Repair">🎨 RESPLAY</button>
+        </div>
+      </div>
+
+      <!-- Right: Wanted Stars, Speedometer, NOS Gauge, Weapon Selector, Menu -->
       <div class="hud-right">
         <div class="wanted-stars" id="hud-stars">
           <span class="star-icon">★</span>
@@ -39,6 +64,13 @@
 
         <div id="hud-speed-box" style="display: none;">
           <span id="hud-speed-val">0 MPH</span>
+          <!-- Nitro NOS Gauge -->
+          <div id="hud-nos-box" title="Hold Shift for NOS Nitro Boost">
+            <div class="nos-label">NOS</div>
+            <div class="nos-track">
+              <div id="hud-nos-bar" style="width: 100%;"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Weapon Selector Badge -->
@@ -58,6 +90,12 @@
         <button class="hud-btn-icon" id="btn-pause">PAUSE / MENU</button>
       </div>
     </div>
+
+    <!-- Center Screen 3D Targeting Reticle -->
+    <div id="hud-crosshair"></div>
+
+    <!-- Insane Stunt Jump Banner -->
+    <div id="hud-stunt-banner">⭐ INSANE STUNT JUMP! ⭐</div>
 
     <!-- Touch Controls (Mobile / Tablet) -->
     <div id="touch-controls">
@@ -98,15 +136,19 @@
         </div>
 
         <div class="controls-guide">
-          <h4>Desktop Controls:</h4>
+          <h4>Vice City Controls:</h4>
           <ul>
             <li><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> Move / Steer</li>
+            <li><kbd>Shift</kbd> 🔥 NOS Nitro Boost (in car) / Sprint (on foot)</li>
             <li><kbd>F</kbd> / <kbd>Enter</kbd> Enter / Exit Car</li>
-            <li><kbd>Space</kbd> Sprint / Handbrake Drift</li>
-            <li><kbd>Left Click</kbd> Punch / Shoot Weapon</li>
-            <li><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> Switch Weapons</li>
+            <li><kbd>Space</kbd> Jump (on foot) / Drift Handbrake (in car)</li>
+            <li><kbd>Left Click</kbd> 💥 Fire 3D Guns (Drive-by in car / Aim on foot)</li>
+            <li><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd> Switch Weapons (Fists, Bat, Pistol, Shotgun)</li>
+            <li><kbd>R</kbd> 📻 Switch Radio (Flash FM, Wave 103, V-Rock)</li>
+            <li><kbd>T</kbd> 🌅 Toggle Atmosphere (Sunset Dusk, Midnight Neon, Sunny Noon)</li>
+            <li><kbd>C</kbd> 🎥 Toggle Camera (Chase, First-Person Hood, Aerial)</li>
             <li><kbd>H</kbd> Car Horn</li>
-            <li><kbd>P</kbd> Pause / Fleet Menu</li>
+            <li><kbd>P</kbd> Pause & Garage Menu</li>
           </ul>
         </div>
 
@@ -122,23 +164,23 @@
   <script src="js/libs/three.min.js"></script>
 
   <!-- Game Scripts in Load Order -->
-  <script src="js/config.js?v=2.2.0"></script>
-  <script src="js/storage.js?v=2.2.0"></script>
-  <script src="js/data_manager.js?v=2.2.0"></script>
-  <script src="js/hud.js?v=2.2.0"></script>
-  <script src="js/audio.js?v=2.2.0"></script>
-  <script src="js/input.js?v=2.2.0"></script>
-  <script src="js/minimap.js?v=2.2.0"></script>
-  <script src="js/combat.js?v=2.2.0"></script>
-  <script src="js/mission_system.js?v=2.2.0"></script>
+  <script src="js/config.js?v=2.3.0"></script>
+  <script src="js/storage.js?v=2.3.0"></script>
+  <script src="js/data_manager.js?v=2.3.0"></script>
+  <script src="js/hud.js?v=2.3.0"></script>
+  <script src="js/audio.js?v=2.3.0"></script>
+  <script src="js/input.js?v=2.3.0"></script>
+  <script src="js/minimap.js?v=2.3.0"></script>
+  <script src="js/combat.js?v=2.3.0"></script>
+  <script src="js/mission_system.js?v=2.3.0"></script>
 
   <!-- 3D Open-World Modules -->
-  <script src="js/map_3d.js?v=2.2.0"></script>
-  <script src="js/vehicle_3d.js?v=2.2.0"></script>
-  <script src="js/player_3d.js?v=2.2.0"></script>
-  <script src="js/traffic_3d.js?v=2.2.0"></script>
-  <script src="js/police_3d.js?v=2.2.0"></script>
-  <script src="js/game_3d.js?v=2.2.0"></script>
+  <script src="js/map_3d.js?v=2.3.0"></script>
+  <script src="js/vehicle_3d.js?v=2.3.0"></script>
+  <script src="js/player_3d.js?v=2.3.0"></script>
+  <script src="js/traffic_3d.js?v=2.3.0"></script>
+  <script src="js/police_3d.js?v=2.3.0"></script>
+  <script src="js/game_3d.js?v=2.3.0"></script>
 </body>
 </html>
 

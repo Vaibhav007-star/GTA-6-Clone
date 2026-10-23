@@ -1,6 +1,11 @@
 /**
- * Combat & Weapon System
- * Manages active weapons, projectiles, muzzle flashes, and ballistic damage.
+ * 3D Ballistic Combat & Weapon System
+ * Features:
+ * - 3D Tracer Bullets flying through WebGL space
+ * - Muzzle flash point lights and ballistic recoil
+ * - Real-time vehicle damage, pedestrian ragdolls, and police aggression response
+ * - Melee punch / bat combo attacks with sound FX
+ * - Switching weapons (Fists, Baseball Bat, 9mm Pistol, Pump Shotgun, Micro SMG)
  */
 
 class CombatSystem {
@@ -8,9 +13,11 @@ class CombatSystem {
     this.weapons = dataManager.getWeapons();
     this.currentWeaponIndex = 0;
     this.projectiles = [];
-    this.muzzleFlashes = [];
     this.cooldownTimer = 0;
-    this.aimTarget = { x: 0, y: 0 }; // World coordinates of aim
+
+    // Shared 3D Tracer Materials
+    this.bulletMat = new THREE.MeshBasicMaterial({ color: 0xfffa65 });
+    this.bulletGeo = new THREE.CylinderGeometry(0.25, 0.25, 3.2, 6);
 
     this.setupListeners();
   }
@@ -20,7 +27,7 @@ class CombatSystem {
   }
 
   setupListeners() {
-    // Weapon switching with number keys 1, 2, 3, 4
+    // Weapon switching keys 1, 2, 3, 4
     window.addEventListener('keydown', (e) => {
       if (['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code)) {
         const idx = parseInt(e.key) - 1;
@@ -29,18 +36,6 @@ class CombatSystem {
           this.updateHUD();
           gameHUD.showNotification(`Equipped: ${this.currentWeapon.name}`);
         }
-      }
-    });
-
-    // Aim with mouse pointer
-    window.addEventListener('mousemove', (e) => {
-      if (window.retroGame) {
-        const game = window.retroGame;
-        const rect = game.canvas.getBoundingClientRect();
-        const screenX = e.clientX - rect.left - game.canvas.width / 2;
-        const screenY = e.clientY - rect.top - game.canvas.height / 2;
-        this.aimTarget.x = game.camera.x + screenX;
-        this.aimTarget.y = game.camera.y + screenY;
       }
     });
 
@@ -56,6 +51,7 @@ class CombatSystem {
     this.currentWeaponIndex = (this.currentWeaponIndex + 1) % this.weapons.length;
     this.updateHUD();
     gameHUD.showNotification(`Equipped: ${this.currentWeapon.name}`);
+    return this.currentWeapon;
   }
 
   updateHUD() {
@@ -67,86 +63,147 @@ class CombatSystem {
 
   triggerAttack() {
     if (this.cooldownTimer > 0) return;
-    const player = window.retroGame ? window.retroGame.player : null;
-    if (!player || player.isInVehicle) return;
+    const game = window.retroGame3D || window.retroGame;
+    if (!game || !game.player) return;
+    const player = game.player;
+
+    if (player.isInVehicle) {
+      // Drive-by shooting in vehicle!
+      this.fireDriveBy(game, player);
+      return;
+    }
 
     const weapon = this.currentWeapon;
     this.cooldownTimer = weapon.cooldown;
 
-    // Heading angle towards aim target
-    const dx = this.aimTarget.x - player.x;
-    const dy = this.aimTarget.y - player.y;
-    const angle = (Math.abs(dx) > 10 || Math.abs(dy) > 10) ? Math.atan2(dx, -dy) : player.angle;
-    player.angle = angle;
+    // Orient player towards camera forward direction
+    player.angle = game.cameraYaw;
+    player.syncPosition();
 
     if (weapon.category === 'Melee') {
       audio.playPunch();
-      this.performMeleeAttack(player, angle, weapon);
+      this.performMeleeAttack(game, player, weapon);
     } else {
-      // Fire gun projectile
       audio.playGunshot(weapon.id === 'shotgun_pump');
-      this.fireProjectile(player, angle, weapon);
+      this.fire3DProjectile(game, player, weapon);
 
       // Alert police if firing firearms in the city
-      if (window.retroGame && window.retroGame.police.wantedLevel === 0 && Math.random() < 0.35) {
-        window.retroGame.police.triggerCrime(1, 'Gunfire Reported in Public Area!');
+      if (game.police && game.police.wantedLevel === 0 && Math.random() < 0.4) {
+        game.police.triggerCrime(1, 'Gunfire Reported in Public Area!');
       }
     }
   }
 
-  performMeleeAttack(player, angle, weapon) {
-    const game = window.retroGame;
-    if (!game) return;
+  fireDriveBy(game, player) {
+    const car = player.currentVehicle;
+    if (!car) return;
+    this.cooldownTimer = 0.18;
+    audio.playGunshot(false);
 
-    const hitDist = weapon.range;
-    const hitX = player.x + Math.sin(angle) * hitDist;
-    const hitY = player.y - Math.cos(angle) * hitDist;
+    // Fire out of car window towards camera aim
+    const camYaw = game.cameraYaw;
+    const camPitch = game.cameraPitch;
 
-    // Check hit on vehicles
+    const fx = Math.sin(camYaw) * Math.cos(camPitch);
+    const fy = -Math.sin(camPitch);
+    const fz = Math.cos(camYaw) * Math.cos(camPitch);
+
+    const speed = 750;
+    this.spawnTracer(game.scene, car.x, car.y + 4.5, car.z, fx * speed, fy * speed, fz * speed, 25, 0.9);
+
+    if (game.police && game.police.wantedLevel === 0 && Math.random() < 0.45) {
+      game.police.triggerCrime(2, 'Drive-By Shooting Reported!');
+    }
+  }
+
+  performMeleeAttack(game, player, weapon) {
+    const hitDist = weapon.range || 12;
+    const hitX = player.x + Math.sin(player.angle) * hitDist;
+    const hitZ = player.z + Math.cos(player.angle) * hitDist;
+
+    // 1. Damage parked/drivable cars
     for (const v of game.vehicles) {
-      if (Math.hypot(v.x - hitX, v.y - hitY) < v.width) {
-        audio.playCrash(0.4);
-        v.health -= weapon.damage;
+      if (Math.hypot(v.x - hitX, v.z - hitZ) < v.width * 1.2) {
+        audio.playCrash(0.3);
+        v.health = Math.max(0, v.health - weapon.damage);
         if (game.police.wantedLevel === 0 && Math.random() < 0.3) {
           game.police.triggerCrime(1, 'Vandalism!');
         }
       }
     }
 
-    // Check hit on pedestrians
-    for (const p of game.traffic.pedestrians) {
-      if (p.alive && Math.hypot(p.x - hitX, p.y - hitY) < 18) {
-        p.alive = false;
-        game.police.triggerCrime(1, 'Assault!');
+    // 2. Punch civilian traffic cars
+    if (game.traffic) {
+      for (const tv of game.traffic.vehicles) {
+        if (Math.hypot(tv.x - hitX, tv.z - hitZ) < 16) {
+          audio.playCrash(0.3);
+          game.police.triggerCrime(1, 'Vandalizing Motor Vehicles!');
+        }
+      }
+
+      // 3. Punch pedestrians
+      for (const p of game.traffic.pedestrians) {
+        if (p.alive && Math.hypot(p.x - hitX, p.z - hitZ) < 14) {
+          p.alive = false;
+          if (p.mesh) p.mesh.rotation.x = Math.PI / 2; // Knock down
+          game.police.triggerCrime(1, 'Assault!');
+          storage.addCash(25);
+          gameHUD.showNotification('Assault: +$25 Cash Pickpocketed!');
+        }
       }
     }
   }
 
-  fireProjectile(player, angle, weapon) {
-    const muzzleDist = 18;
-    const spawnX = player.x + Math.sin(angle) * muzzleDist;
-    const spawnY = player.y - Math.cos(angle) * muzzleDist;
+  fire3DProjectile(game, player, weapon) {
+    const camYaw = game.cameraYaw;
+    const camPitch = game.cameraPitch;
 
-    // Muzzle flash particle
-    this.muzzleFlashes.push({
-      x: spawnX,
-      y: spawnY,
-      angle: angle,
-      life: 0.06
-    });
+    // Shotgun fires multiple pellets
+    const pelletCount = weapon.id === 'shotgun_pump' ? 6 : 1;
 
-    // Spread
-    const spread = (Math.random() - 0.5) * weapon.spread;
-    const finalAngle = angle + spread;
-    const speed = weapon.projectileSpeed || 900;
+    for (let i = 0; i < pelletCount; i++) {
+      const spreadX = (Math.random() - 0.5) * (weapon.spread || 0.04);
+      const spreadY = (Math.random() - 0.5) * (weapon.spread || 0.04);
+
+      const yaw = camYaw + spreadX;
+      const pitch = camPitch + spreadY;
+
+      const fx = Math.sin(yaw) * Math.cos(pitch);
+      const fy = -Math.sin(pitch);
+      const fz = Math.cos(yaw) * Math.cos(pitch);
+
+      const speed = weapon.projectileSpeed || 850;
+      const spawnX = player.x + fx * 4.0;
+      const spawnY = player.y + 6.0 + fy * 4.0;
+      const spawnZ = player.z + fz * 4.0;
+
+      this.spawnTracer(
+        game.scene,
+        spawnX, spawnY, spawnZ,
+        fx * speed, fy * speed, fz * speed,
+        weapon.damage,
+        (weapon.range || 450) / speed
+      );
+    }
+  }
+
+  spawnTracer(scene, x, y, z, vx, vy, vz, damage, maxLife) {
+    const mesh = new THREE.Mesh(this.bulletGeo, this.bulletMat);
+    mesh.position.set(x, y, z);
+
+    // Orient cylinder along trajectory velocity vector
+    const dir = new THREE.Vector3(vx, vy, vz).normalize();
+    const up = new THREE.Vector3(0, 1, 0);
+    mesh.quaternion.setFromUnitVectors(up, dir);
+
+    scene.add(mesh);
 
     this.projectiles.push({
-      x: spawnX,
-      y: spawnY,
-      vx: Math.sin(finalAngle) * speed,
-      vy: -Math.cos(finalAngle) * speed,
-      damage: weapon.damage,
-      life: weapon.range / speed
+      mesh,
+      x, y, z,
+      vx, vy, vz,
+      damage,
+      life: maxLife
     });
   }
 
@@ -155,102 +212,85 @@ class CombatSystem {
       this.cooldownTimer = Math.max(0, this.cooldownTimer - dt);
     }
 
-    // Update muzzle flashes
-    for (let i = this.muzzleFlashes.length - 1; i >= 0; i--) {
-      this.muzzleFlashes[i].life -= dt;
-      if (this.muzzleFlashes[i].life <= 0) {
-        this.muzzleFlashes.splice(i, 1);
-      }
-    }
-
-    // Update projectiles
+    // Update active 3D projectiles
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const p = this.projectiles[i];
       p.x += p.vx * dt;
       p.y += p.vy * dt;
+      p.z += p.vz * dt;
       p.life -= dt;
 
-      // 1. Building collision
-      const col = game.map.checkBuildingCollision(p.x, p.y, 4);
-      if (col.collided) {
-        this.projectiles.splice(i, 1);
-        continue;
+      p.mesh.position.set(p.x, p.y, p.z);
+
+      let hasTerminated = false;
+
+      // 1. Check ground / ocean collision
+      if (p.y <= 0) {
+        hasTerminated = true;
       }
 
-      // 2. Vehicle collision
-      let hit = false;
-      for (const v of game.vehicles) {
-        if (Math.hypot(v.x - p.x, v.y - p.y) < v.width * 0.7) {
-          audio.playCrash(0.5);
-          v.health -= p.damage;
-          hit = true;
-          break;
+      // 2. Check 3D building collision
+      if (!hasTerminated && game.map) {
+        const col = game.map.checkCollision(p.x, p.z, 2.0);
+        if (col.collided) {
+          hasTerminated = true;
         }
       }
 
-      // 3. Civilian cars collision
-      if (!hit) {
+      // 3. Check drivable cars collision
+      if (!hasTerminated && game.vehicles) {
+        for (const v of game.vehicles) {
+          if (Math.hypot(v.x - p.x, v.z - p.z) < v.width * 1.1 && Math.abs(p.y - (v.y + 3)) < 4) {
+            audio.playCrash(0.4);
+            v.health = Math.max(0, v.health - p.damage);
+            hasTerminated = true;
+            break;
+          }
+        }
+      }
+
+      // 4. Check civilian traffic cars
+      if (!hasTerminated && game.traffic && game.traffic.vehicles) {
         for (const tv of game.traffic.vehicles) {
-          if (Math.hypot(tv.x - p.x, tv.y - p.y) < 22) {
-            audio.playCrash(0.5);
-            game.police.triggerCrime(1, 'Firing upon Motor Vehicles!');
-            hit = true;
+          if (Math.hypot(tv.x - p.x, tv.z - p.z) < 14) {
+            audio.playCrash(0.4);
+            game.police.triggerCrime(1, 'Firing upon Traffic Vehicles!');
+            hasTerminated = true;
             break;
           }
         }
       }
 
-      // 4. Police cruisers collision
-      if (!hit) {
+      // 5. Check police cruisers
+      if (!hasTerminated && game.police && game.police.policeUnits) {
         for (const cop of game.police.policeUnits) {
-          if (Math.hypot(cop.x - p.x, cop.y - p.y) < 24) {
-            audio.playCrash(0.7);
-            game.police.triggerCrime(3, 'Attacking Law Enforcement with Firearms!');
-            hit = true;
+          if (Math.hypot(cop.x - p.x, cop.z - p.z) < 16) {
+            audio.playCrash(0.6);
+            game.police.triggerCrime(3, 'Attacking Police Cruisers with Firearms!');
+            hasTerminated = true;
             break;
           }
         }
       }
 
-      // 5. Pedestrian collision
-      if (!hit) {
+      // 6. Check pedestrians
+      if (!hasTerminated && game.traffic && game.traffic.pedestrians) {
         for (const ped of game.traffic.pedestrians) {
-          if (ped.alive && Math.hypot(ped.x - p.x, ped.y - p.y) < 14) {
+          if (ped.alive && Math.hypot(ped.x - p.x, ped.z - p.z) < 10) {
             ped.alive = false;
+            if (ped.mesh) ped.mesh.rotation.x = Math.PI / 2;
             game.police.triggerCrime(2, 'Manslaughter!');
-            hit = true;
+            hasTerminated = true;
             break;
           }
         }
       }
 
-      if (hit || p.life <= 0) {
+      // Remove projectile if hit or expired
+      if (hasTerminated || p.life <= 0) {
+        game.scene.remove(p.mesh);
         this.projectiles.splice(i, 1);
       }
-    }
-  }
-
-  render(ctx) {
-    // 1. Draw Muzzle Flashes
-    for (const mf of this.muzzleFlashes) {
-      ctx.save();
-      ctx.translate(mf.x, mf.y);
-      ctx.rotate(mf.angle);
-      ctx.fillStyle = '#fffa65';
-      ctx.beginPath();
-      ctx.arc(0, -4, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    // 2. Draw Bullet Tracers
-    ctx.strokeStyle = '#fff176';
-    ctx.lineWidth = 2.5;
-    for (const p of this.projectiles) {
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x - p.vx * 0.02, p.y - p.vy * 0.02);
-      ctx.stroke();
     }
   }
 }
@@ -261,4 +301,3 @@ if (typeof window !== 'undefined') {
   window.CombatSystem = CombatSystem;
   window.combatSystem = combatSystem;
 }
-
