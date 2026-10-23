@@ -1,10 +1,15 @@
 /**
- * Procedural Web Audio API Sound Synthesizer & Vice City Radio Engine
+ * Procedural Web Audio API Sound Synthesizer & Haryanvi Music Radio Engine
  * 100% Offline, Zero external audio files required.
  * Features:
  * - Real-time vehicle engine synthesis (idle to redline)
- * - Police sirens and multi-tier horns
- * - Vice City 80s procedural radio stations: Flash FM, Wave 103, V-Rock
+ * - Police sirens and multi-tier horns (including Tata Truck musical chime & Auto Rickshaw horn)
+ * - Haryanvi Desi Music Radio Stations:
+ *   1. HR 26 Haryanvi Ragini (Authentic Dholak & Been folk hook)
+ *   2. Thar Desi Bass Boost (Heavy sub-bass & 808 trap drops)
+ *   3. Yaar Badmaash Radio (Gangster Haryanvi brass & swagger dholak)
+ *   4. System Hang DJ Mix (High-tempo desi banger & fast synth arps)
+ *   5. Radio Off
  * - Nitro turbo spool & exhaust pops
  * - Pay 'n' Spray aerosol can hiss
  * - Insane Stunt Jump fanfare
@@ -22,14 +27,15 @@ class SoundEngine {
     this.sirenInterval = null;
     this.isSirenPlaying = false;
 
-    // Radio stations system
+    // Haryanvi Desi Music Radio stations system
     this.radioStations = [
-      { id: 'flash', name: 'Flash FM', genre: '80s Synth-Pop', color: '#ff7675' },
-      { id: 'wave', name: 'Wave 103', genre: 'Dark Wave & Electro', color: '#00d2d3' },
-      { id: 'vrock', name: 'V-Rock', genre: 'Hard Rock & Heavy Metal', color: '#f39c12' },
-      { id: 'off', name: 'Radio Off', genre: 'Engine Only', color: '#718093' }
+      { id: 'hr_ragini', name: 'HR 26 Haryanvi Ragini', genre: 'Desi Dholak & Been Hook', color: '#f39c12', icon: '🪕' },
+      { id: 'thar_bass', name: 'Thar Desi Bass Boost', genre: 'Sub-Bass Haryanvi Drift', color: '#ff3838', icon: '🔥' },
+      { id: 'badmaash', name: 'Yaar Badmaash Radio', genre: 'Gangster Haryanvi Swag', color: '#9b59b6', icon: '👑' },
+      { id: 'system_hang', name: 'System Hang DJ Mix', genre: 'High-Tempo Desi Bangers', color: '#00d2d3', icon: '⚡' },
+      { id: 'off', name: 'Radio Off', genre: 'Engine Only', color: '#718093', icon: '🔇' }
     ];
-    this.currentStationIndex = 0; // Default: Flash FM
+    this.currentStationIndex = 0; // Default: HR 26 Haryanvi Ragini
     this.radioInterval = null;
     this.radioGain = null;
     this.radioStep = 0;
@@ -61,7 +67,7 @@ class SoundEngine {
       this.stopSiren();
     } else {
       if (this.radioGain && this.currentStation.id !== 'off') {
-        this.radioGain.gain.setValueAtTime(0.09, this.ctx.currentTime);
+        this.radioGain.gain.setValueAtTime(0.11, this.ctx.currentTime);
       }
     }
     return this.isMuted;
@@ -101,7 +107,6 @@ class SoundEngine {
       return;
     }
 
-    // Modulate pitch from 55Hz (idle) to 320Hz (top speed)
     const targetFreq = 55 + Math.min(speedRatio, 1.4) * 220;
     this.engineOsc.frequency.setTargetAtTime(targetFreq, now, 0.08);
 
@@ -110,13 +115,13 @@ class SoundEngine {
   }
 
   /* =========================================================================
-   * PROCEDURAL 80s VICE CITY RADIO STATIONS
+   * PROCEDURAL HARYANVI DESI MUSIC RADIO ENGINE
    * ========================================================================= */
 
   initRadioGain() {
     if (!this.ctx) return;
     this.radioGain = this.ctx.createGain();
-    this.radioGain.gain.setValueAtTime(0.09, this.ctx.currentTime);
+    this.radioGain.gain.setValueAtTime(0.11, this.ctx.currentTime);
     this.radioGain.connect(this.ctx.destination);
     this.startRadio();
   }
@@ -134,7 +139,7 @@ class SoundEngine {
     if (station.id === 'off') {
       if (this.radioGain) this.radioGain.gain.setValueAtTime(0, this.ctx.currentTime);
     } else {
-      if (this.radioGain && !this.isMuted) this.radioGain.gain.setValueAtTime(0.09, this.ctx.currentTime);
+      if (this.radioGain && !this.isMuted) this.radioGain.gain.setValueAtTime(0.11, this.ctx.currentTime);
       this.playRadioTuningChime();
     }
 
@@ -145,33 +150,34 @@ class SoundEngine {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Static burst followed by radio tone
+    // Tuning static sweep
     const burst = this.ctx.createBufferSource();
-    const bSize = Math.floor(this.ctx.sampleRate * 0.08);
+    const bSize = Math.floor(this.ctx.sampleRate * 0.06);
     const buf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
     const data = buf.getChannelData(0);
-    for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.2;
+    for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.15;
     burst.buffer = buf;
     burst.connect(this.ctx.destination);
     burst.start(now);
 
+    // Haryanvi Tumba pluck tone
     const tone = this.ctx.createOscillator();
     const g = this.ctx.createGain();
-    tone.type = 'sine';
-    tone.frequency.setValueAtTime(880, now + 0.04);
-    g.gain.setValueAtTime(0.08, now + 0.04);
-    g.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+    tone.type = 'triangle';
+    tone.frequency.setValueAtTime(587.33, now + 0.03); // D5
+    g.gain.setValueAtTime(0.12, now + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
     tone.connect(g);
     g.connect(this.ctx.destination);
-    tone.start(now + 0.04);
-    tone.stop(now + 0.14);
+    tone.start(now + 0.03);
+    tone.stop(now + 0.15);
   }
 
   startRadio() {
     if (this.radioInterval) clearInterval(this.radioInterval);
 
-    // 16th-note procedural rhythm sequencer (~124 BPM)
-    const stepTime = 125; // ms per 16th note
+    // 16th-note syncopated Haryanvi rhythm sequencer (~126 BPM)
+    const stepTime = 120; // ms per 16th note
     this.radioInterval = setInterval(() => {
       if (!this.ctx || this.isMuted || this.currentStation.id === 'off') return;
       this.tickRadioStep();
@@ -184,51 +190,167 @@ class SoundEngine {
     const now = this.ctx.currentTime;
     const s = this.radioStep;
 
-    if (station === 'flash') {
-      // FLASH FM: Upbeat 80s synth-pop arpeggios & kick/snare
-      // 1. Kick on 0, 4, 8, 12, 16, 20, 24, 28
-      if (s % 4 === 0) this.synthDrumKick(now);
-      // 2. Snare on 4, 12, 20, 28
-      if (s % 8 === 4) this.synthDrumSnare(now);
-      // 3. Synth arpeggio (F#m - D - A - E progression)
-      const flashNotes = [370, 440, 554, 440, 293, 370, 440, 370, 220, 277, 330, 277, 330, 392, 493, 392];
-      const freq = flashNotes[s % flashNotes.length];
-      this.synthPopLead(now, freq, 0.08, 'sawtooth');
-    } else if (station === 'wave') {
-      // WAVE 103: Dark new wave electro pulsing octave bassline
-      if (s % 4 === 0) this.synthDrumKick(now);
-      if (s % 8 === 4) this.synthDrumSnare(now);
+    if (station === 'hr_ragini') {
+      // 1. HR 26 HARYANVI RAGINI (Authentic Dholak Geh & Chaati with Been/Pungi Hook)
+      // Dholak Bass Drum (Dhuma / Geh) on syncopated 0, 3, 6, 8, 10, 14
+      if ([0, 3, 6, 8, 10, 14, 16, 19, 22, 24, 26, 30].includes(s)) {
+        this.synthDholakBass(now, 115, 42);
+      }
+      // Dholak Sharp Slap (Chaati / Ta) on 2, 4, 7, 12, 15, 18, 20, 23, 28, 31
+      if ([2, 4, 7, 12, 15, 18, 20, 23, 28, 31].includes(s)) {
+        this.synthDholakSlap(now);
+      }
 
-      // Pumping bassline
-      const bassRoots = [110, 110, 220, 110, 130.8, 130.8, 261.6, 130.8];
-      const freq = bassRoots[s % bassRoots.length];
-      this.synthPopLead(now, freq, 0.1, 'square');
-    } else if (station === 'vrock') {
-      // V-ROCK: Heavy power chord riffs & fast drums
-      if (s % 2 === 0) this.synthDrumKick(now);
-      if (s % 4 === 2) this.synthDrumSnare(now);
+      // Haryanvi Folk Been / Tumba Lead Hook (D minor / Bhairav scale: D - F# - G - A - C - B - A)
+      const raginiNotes = [
+        293.66, 293.66, 369.99, 392.00, 440.00, 523.25, 493.88, 440.00,
+        392.00, 369.99, 392.00, 440.00, 369.99, 329.63, 293.66, 293.66,
+        440.00, 440.00, 523.25, 587.33, 523.25, 493.88, 440.00, 392.00,
+        369.99, 392.00, 440.00, 369.99, 329.63, 293.66, 293.66, 293.66
+      ];
+      const freq = raginiNotes[s % raginiNotes.length];
+      this.synthBeenLead(now, freq, 0.11);
 
-      // Distorted power chord chugs (E5 - G5 - A5 - D5)
-      const chords = [82.4, 82.4, 98.0, 82.4, 110.0, 110.0, 73.4, 82.4];
-      const freq = chords[Math.floor(s / 4) % chords.length];
-      this.synthRockChug(now, freq);
+    } else if (station === 'thar_bass') {
+      // 2. THAR DESI BASS BOOST (Heavy Sub-Bass & 808s for Off-Road Cruising)
+      // Low punchy 808 kick on 0, 4, 8, 12, 16, 20, 24, 28
+      if (s % 4 === 0) {
+        this.synthDholakBass(now, 140, 35);
+      }
+      // Sharp snare clap on 4, 12, 20, 28
+      if (s % 8 === 4) {
+        this.synthDholakSlap(now);
+      }
+      // Dholak roll fills on beat 14-15 and 30-31
+      if (s === 14 || s === 15 || s === 30 || s === 31) {
+        this.synthDholakSlap(now);
+      }
+
+      // Heavy 808 Sub-Bass Line (F - G - D - C progression)
+      const subNotes = [87.31, 87.31, 98.00, 73.42, 65.41, 65.41, 73.42, 73.42];
+      const subFreq = subNotes[Math.floor(s / 4) % subNotes.length];
+      this.synthDesi808(now, subFreq);
+
+      // Synth whistle lead hook
+      if (s % 2 === 0) {
+        const lead = [587.33, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 587.33];
+        this.synthBeenLead(now, lead[(s / 2) % lead.length], 0.08);
+      }
+
+    } else if (station === 'badmaash') {
+      // 3. YAAR BADMAASH RADIO (Gangster Haryanvi Swag with Brass Stabs & Dholak)
+      if ([0, 4, 8, 12, 16, 20, 24, 28].includes(s)) {
+        this.synthDholakBass(now, 120, 38);
+      }
+      if ([4, 12, 20, 28].includes(s)) {
+        this.synthDholakSlap(now);
+      }
+      // Offbeat syncopated dholak taps
+      if ([2, 6, 10, 14, 18, 22, 26, 30].includes(s)) {
+        this.synthDholakSlap(now);
+      }
+
+      // Heavy brass power stabs on offbeats
+      if (s % 4 === 2) {
+        this.synthBrassStab(now, 146.83); // D3 brass
+      }
+
+      // Swagger lead melody (Gangster slow groove)
+      const swagNotes = [293.66, 311.13, 369.99, 392.00, 440.00, 392.00, 369.99, 311.13];
+      const freq = swagNotes[Math.floor(s / 4) % swagNotes.length];
+      this.synthBeenLead(now, freq, 0.18);
+
+    } else if (station === 'system_hang') {
+      // 4. SYSTEM HANG DJ MIX (High-Tempo Desi Bangers with Fast Arpeggios & Dhol)
+      // Double time dholak kicks
+      if (s % 2 === 0) {
+        this.synthDholakBass(now, 130, 42);
+      }
+      if (s % 4 === 2) {
+        this.synthDholakSlap(now);
+      }
+
+      // High-speed EDM / Desi synth bends
+      const djArp = [392.00, 440.00, 523.25, 587.33, 659.25, 587.33, 523.25, 440.00];
+      const freq = djArp[s % djArp.length];
+      this.synthBeenLead(now, freq, 0.07);
     }
   }
 
-  synthPopLead(time, freq, dur, type = 'sawtooth') {
+  /* =========================================================================
+   * HARYANVI INSTRUMENT SYNTHESIZERS
+   * ========================================================================= */
+
+  synthDholakBass(time, startFreq = 115, endFreq = 40) {
+    if (!this.ctx || !this.radioGain) return;
+    const osc = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(startFreq, time);
+    osc.frequency.exponentialRampToValueAtTime(endFreq, time + 0.12);
+
+    g.gain.setValueAtTime(0.20, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+
+    osc.connect(g);
+    g.connect(this.radioGain);
+
+    osc.start(time);
+    osc.stop(time + 0.12);
+  }
+
+  synthDholakSlap(time) {
+    if (!this.ctx || !this.radioGain) return;
+
+    // High resonant ping of the Dholak rim
+    const ping = this.ctx.createOscillator();
+    const pg = this.ctx.createGain();
+    ping.type = 'triangle';
+    ping.frequency.setValueAtTime(1250, time);
+    ping.frequency.exponentialRampToValueAtTime(600, time + 0.05);
+    pg.gain.setValueAtTime(0.12, time);
+    pg.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+    ping.connect(pg);
+    pg.connect(this.radioGain);
+    ping.start(time);
+    ping.stop(time + 0.05);
+
+    // Acoustic skin snap noise
+    const bSize = Math.floor(this.ctx.sampleRate * 0.04);
+    const buf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bSize; i++) data[i] = (Math.random() * 2 - 1) * 0.15;
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.09, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+
+    noise.connect(g);
+    g.connect(this.radioGain);
+    noise.start(time);
+  }
+
+  synthBeenLead(time, freq, dur) {
     if (!this.ctx || !this.radioGain) return;
     const osc = this.ctx.createOscillator();
     const g = this.ctx.createGain();
     const filter = this.ctx.createBiquadFilter();
 
-    osc.type = type;
+    // Haryanvi reed/pungi sound
+    osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(freq, time);
+    // Subtle Indian microtonal glide / vibrato
+    osc.frequency.linearRampToValueAtTime(freq * 1.015, time + dur * 0.5);
+    osc.frequency.linearRampToValueAtTime(freq, time + dur);
 
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1800, time);
-    filter.frequency.exponentialRampToValueAtTime(600, time + dur);
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1400, time);
+    filter.Q.setValueAtTime(3.5, time);
 
-    g.gain.setValueAtTime(0.045, time);
+    g.gain.setValueAtTime(0.065, time);
     g.gain.exponentialRampToValueAtTime(0.001, time + dur);
 
     osc.connect(filter);
@@ -239,7 +361,26 @@ class SoundEngine {
     osc.stop(time + dur);
   }
 
-  synthRockChug(time, freq) {
+  synthDesi808(time, freq) {
+    if (!this.ctx || !this.radioGain) return;
+    const osc = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq * 1.2, time);
+    osc.frequency.exponentialRampToValueAtTime(freq, time + 0.08);
+
+    g.gain.setValueAtTime(0.18, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.28);
+
+    osc.connect(g);
+    g.connect(this.radioGain);
+
+    osc.start(time);
+    osc.stop(time + 0.28);
+  }
+
+  synthBrassStab(time, freq) {
     if (!this.ctx || !this.radioGain) return;
     const osc1 = this.ctx.createOscillator();
     const osc2 = this.ctx.createOscillator();
@@ -249,10 +390,10 @@ class SoundEngine {
     osc1.frequency.setValueAtTime(freq, time);
 
     osc2.type = 'sawtooth';
-    osc2.frequency.setValueAtTime(freq * 1.498, time); // Fifth for power chord
+    osc2.frequency.setValueAtTime(freq * 1.498, time);
 
-    g.gain.setValueAtTime(0.04, time);
-    g.gain.exponentialRampToValueAtTime(0.001, time + 0.18);
+    g.gain.setValueAtTime(0.12, time);
+    g.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
 
     osc1.connect(g);
     osc2.connect(g);
@@ -260,51 +401,12 @@ class SoundEngine {
 
     osc1.start(time);
     osc2.start(time);
-    osc1.stop(time + 0.18);
-    osc2.stop(time + 0.18);
-  }
-
-  synthDrumKick(time) {
-    if (!this.ctx || !this.radioGain) return;
-    const osc = this.ctx.createOscillator();
-    const g = this.ctx.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(130, time);
-    osc.frequency.exponentialRampToValueAtTime(35, time + 0.08);
-
-    g.gain.setValueAtTime(0.12, time);
-    g.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
-
-    osc.connect(g);
-    g.connect(this.radioGain);
-
-    osc.start(time);
-    osc.stop(time + 0.08);
-  }
-
-  synthDrumSnare(time) {
-    if (!this.ctx || !this.radioGain) return;
-    const bufferSize = Math.floor(this.ctx.sampleRate * 0.06);
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.12;
-
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-
-    const g = this.ctx.createGain();
-    g.gain.setValueAtTime(0.06, time);
-    g.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
-
-    noise.connect(g);
-    g.connect(this.radioGain);
-
-    noise.start(time);
+    osc1.stop(time + 0.16);
+    osc2.stop(time + 0.16);
   }
 
   /* =========================================================================
-   * NITRO, STUNT, RESPLAY & COMBAT SOUND EFFECTS
+   * NITRO, STUNT, RESPLAY, HORN & COMBAT SOUND EFFECTS
    * ========================================================================= */
 
   playNitro() {
@@ -312,7 +414,6 @@ class SoundEngine {
     this.resume();
     const now = this.ctx.currentTime;
 
-    // High turbo spool whistle
     const osc = this.ctx.createOscillator();
     const g = this.ctx.createGain();
     osc.type = 'sine';
@@ -333,7 +434,6 @@ class SoundEngine {
     this.resume();
     const now = this.ctx.currentTime;
 
-    // Glorious fanfare notes (C5 -> E5 -> G5 -> C6)
     [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
       const osc = this.ctx.createOscillator();
       const g = this.ctx.createGain();
@@ -355,7 +455,6 @@ class SoundEngine {
     this.resume();
     const now = this.ctx.currentTime;
 
-    // Spray can rattle ball
     const rattleOsc = this.ctx.createOscillator();
     const rg = this.ctx.createGain();
     rattleOsc.type = 'square';
@@ -367,7 +466,6 @@ class SoundEngine {
     rattleOsc.start(now);
     rattleOsc.stop(now + 0.1);
 
-    // Aerosol paint hiss
     const dur = 0.55;
     const bSize = Math.floor(this.ctx.sampleRate * dur);
     const buf = this.ctx.createBuffer(1, bSize, this.ctx.sampleRate);
@@ -398,7 +496,6 @@ class SoundEngine {
     const now = this.ctx.currentTime;
 
     if (typeKey === 'DESI_TRUCK') {
-      // Iconic Indian "Horn OK Please" multi-tone musical truck horn!
       [293.66, 369.99, 440.00, 587.33].forEach((f, i) => {
         const o = this.ctx.createOscillator();
         const g = this.ctx.createGain();
@@ -415,7 +512,6 @@ class SoundEngine {
     }
 
     if (typeKey === 'AUTO_RICKSHAW') {
-      // 2-stroke buzzing high beep-beep!
       [780, 840].forEach(f => {
         const o = this.ctx.createOscillator();
         const g = this.ctx.createGain();
@@ -436,9 +532,9 @@ class SoundEngine {
     const gain = this.ctx.createGain();
 
     osc1.type = 'triangle';
-    osc1.frequency.setValueAtTime(349.23, now); // F4
+    osc1.frequency.setValueAtTime(349.23, now);
     osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(440.00, now); // A4
+    osc2.frequency.setValueAtTime(440.00, now);
 
     gain.gain.setValueAtTime(0.18, now);
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
