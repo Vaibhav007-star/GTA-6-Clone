@@ -5,12 +5,12 @@
       "title": "Midnight Joyride",
       "giver": "The Fixer",
       "type": "CAR_THEFT",
-      "description": "Locate the red Venom GT parked near the Downtown District and deliver it safely to the chop shop garage.",
+      "description": "Locate the red Venom GT parked on Ocean Drive and deliver it across the bay to the Vice Port Chop Shop garage.",
       "targetVehicle": "SPORTS",
-      "rewardCash": 750,
-      "rewardRep": 50,
-      "timeLimit": 90,
-      "dropoff": { "x": 1960, "y": 750, "radius": 40 },
+      "rewardCash": 1000,
+      "rewardRep": 60,
+      "timeLimit": 110,
+      "dropoff": { "x": 950, "y": 2450, "radius": 55 },
       "minWantedOnStart": 0
     },
     {
@@ -18,10 +18,10 @@
       "title": "Five-Alarm Heat",
       "giver": "Anonymous Payphone",
       "type": "POLICE_EVADE",
-      "description": "Trigger the law to 2-Stars, maintain the high-speed pursuit for 30 seconds, then completely lose your wanted level.",
+      "description": "Trigger the law to 2-Stars, maintain the high-speed pursuit across the causeways, then lose your wanted level.",
       "targetStars": 2,
       "surviveTime": 30,
-      "rewardCash": 1200,
+      "rewardCash": 1500,
       "rewardRep": 100,
       "minWantedOnStart": 2
     },
@@ -30,15 +30,16 @@
       "title": "Neon Sprint",
       "giver": "Courier Express",
       "type": "CHECKPOINT_RACE",
-      "description": "Race across three designated intersection checkpoints before the timer expires.",
+      "description": "Race from Ocean Drive across the North Causeway Bridge into Downtown Vice before the timer expires.",
       "checkpoints": [
-        { "x": 750, "y": 750 },
-        { "x": 1300, "y": 1850 },
-        { "x": 1850, "y": 750 }
+        { "x": 2600, "y": 1460 },
+        { "x": 2200, "y": 800 },
+        { "x": 1350, "y": 800 },
+        { "x": 950, "y": 1200 }
       ],
-      "rewardCash": 900,
-      "rewardRep": 70,
-      "timeLimit": 60
+      "rewardCash": 1200,
+      "rewardRep": 80,
+      "timeLimit": 75
     },
     {
       "id": "mission_04_stash",

@@ -20,18 +20,18 @@ class RetroOutlaw3D {
   }
 
   initThree() {
-    // 1. Scene & Atmospheric Fog
+    // 1. Scene & Vice City Sunset Fog
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x131a26); // Retro dusk sky
-    this.scene.fog = new THREE.FogExp2(0x131a26, 0.0016);
+    this.scene.background = new THREE.Color(0x221336); // Synthwave sunset violet
+    this.scene.fog = new THREE.FogExp2(0x221336, 0.0011);
 
     // 2. Camera & Orbit Angles
-    this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1.0, 3000);
+    this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1.0, 4000);
     this.cameraYaw = 0;
-    this.cameraPitch = 0.35;
-    this.camera.position.set(750, 25, 710);
+    this.cameraPitch = 0.32;
+    this.camera.position.set(2600, 22, 1460);
 
-    // 3. WebGL Renderer
+    // 3. WebGL Renderer (Optimized for RTX 3050)
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
@@ -42,18 +42,21 @@ class RetroOutlaw3D {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // 4. Lighting
-    const ambient = new THREE.AmbientLight(0x5c7c99, 1.1);
+    // 4. Lighting (Golden Sunset & Neon Twilight)
+    const ambient = new THREE.AmbientLight(0x70528c, 1.2);
     this.scene.add(ambient);
 
-    this.sunLight = new THREE.DirectionalLight(0xffeedd, 1.6);
-    this.sunLight.position.set(600, 450, 400);
+    const hemiLight = new THREE.HemisphereLight(0xff9f43, 0x0abde3, 0.6);
+    this.scene.add(hemiLight);
+
+    this.sunLight = new THREE.DirectionalLight(0xffb142, 1.9); // Warm golden sun
+    this.sunLight.position.set(2000, 480, 800);
     this.sunLight.castShadow = true;
     this.sunLight.shadow.mapSize.width = 2048;
     this.sunLight.shadow.mapSize.height = 2048;
     this.sunLight.shadow.camera.near = 10;
-    this.sunLight.shadow.camera.far = 1500;
-    const d = 400;
+    this.sunLight.shadow.camera.far = 1800;
+    const d = 500;
     this.sunLight.shadow.camera.left = -d;
     this.sunLight.shadow.camera.right = d;
     this.sunLight.shadow.camera.top = d;
@@ -63,17 +66,20 @@ class RetroOutlaw3D {
 
   initWorld() {
     this.map = new CityMap3D(this.scene);
-    this.player = new Player3D(this.scene, 750, 750);
+
+    // Spawn Player on Ocean Drive (X: 2600, Z: 1500) overlooking the palms and beach
+    this.player = new Player3D(this.scene, 2600, 1500);
     this.vehicles = [];
 
-    // Parked Drivable Cars
+    // Parked Drivable Vehicles on Vice Island
     const spawns = [
-      { x: 750, z: 700, type: 'SPORTS', angle: 0, color: '#e74c3c' },
-      { x: 800, z: 750, type: 'SEDAN', angle: Math.PI / 2, color: '#2980b9' },
-      { x: 1300, z: 700, type: 'MUSCLE', angle: Math.PI, color: '#f39c12' },
-      { x: 1850, z: 1300, type: 'POLICE', angle: -Math.PI / 2, color: '#1a1a1a' },
-      { x: 750, z: 1300, type: 'SEDAN', angle: 0, color: '#16a085' },
-      { x: 1300, z: 1850, type: 'SPORTS', angle: Math.PI / 2, color: '#9b59b6' }
+      { x: 2600, z: 1460, type: 'SPORTS', angle: 0, color: '#e74c3c' },        // Venom GT on Ocean Drive
+      { x: 2600, z: 1000, type: 'SPORTS', angle: Math.PI, color: '#f1c40f' },    // Yellow GT near Sunray
+      { x: 1700, z: 1430, type: 'MUSCLE', angle: Math.PI / 2, color: '#f39c12' },// Starfish Island Mansion
+      { x: 2600, z: 1800, type: 'SEDAN', angle: 0, color: '#2980b9' },          // Executive Sedan on Ocean Dr
+      { x: 1350, z: 800, type: 'POLICE', angle: -Math.PI / 2, color: '#1a1a1a' },// North Causeway Entrance
+      { x: 950, z: 1200, type: 'SEDAN', angle: 0, color: '#f39c12' },           // Taxi Cab Downtown
+      { x: 950, z: 2450, type: 'MUSCLE', angle: 0, color: '#e67e22' }            // Port Chop Shop Muscle Car
     ];
 
     for (const s of spawns) {
@@ -196,7 +202,7 @@ class RetroOutlaw3D {
   start() {
     this.clock.start();
     this.loop();
-    gameHUD.showNotification('Welcome to Retro City 3D! WASD to drive, F to enter cars');
+    gameHUD.showNotification('Welcome to Vice Island! Cruise Ocean Drive or cross the Causeway (WASD / Mouse)');
   }
 
   loop() {

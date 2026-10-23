@@ -13,10 +13,14 @@ class TrafficManager3D {
   init() {
     const colors = [0x8e44ad, 0xf39c12, 0x16a085, 0xd35400, 0x27ae60, 0x7f8c8d];
     const routes = [
-      { waypoints: [{ x: 750, z: 150 }, { x: 750, z: 2450 }], startX: 750, startZ: 300, speed: 40 },
-      { waypoints: [{ x: 1300, z: 2450 }, { x: 1300, z: 150 }], startX: 1300, startZ: 2200, speed: 45 },
-      { waypoints: [{ x: 150, z: 750 }, { x: 2450, z: 750 }], startX: 300, startZ: 750, speed: 38 },
-      { waypoints: [{ x: 2450, z: 1850 }, { x: 150, z: 1850 }], startX: 2200, startZ: 1850, speed: 42 }
+      // 1. Ocean Drive Beachfront Cruise
+      { waypoints: [{ x: 2600, z: 550 }, { x: 2600, z: 2750 }], startX: 2600, startZ: 800, speed: 45 },
+      // 2. North Causeway Bridge (Downtown to Beach Island)
+      { waypoints: [{ x: 500, z: 800 }, { x: 2600, z: 800 }], startX: 1600, startZ: 800, speed: 52 },
+      // 3. Downtown Financial Avenue
+      { waypoints: [{ x: 950, z: 450 }, { x: 950, z: 2650 }], startX: 950, startZ: 1100, speed: 42 },
+      // 4. South Port Causeway Bridge
+      { waypoints: [{ x: 2600, z: 2200 }, { x: 950, z: 2200 }], startX: 2100, startZ: 2200, speed: 48 }
     ];
 
     routes.forEach((r, idx) => {
@@ -28,11 +32,12 @@ class TrafficManager3D {
       this.vehicles.push(v);
     });
 
-    // 3D Pedestrians along sidewalks
+    // 3D Pedestrians along Ocean Drive Palm Promenade
     const pCoords = [
-      { x: 700, z: 350, dir: 1, min: 300, max: 650 },
-      { x: 800, z: 900, dir: -1, min: 800, max: 1200 },
-      { x: 950, z: 1000, dir: 1, min: 880, max: 1150 }
+      { x: 2670, z: 900, dir: 1, min: 700, max: 1300 },
+      { x: 2670, z: 1500, dir: -1, min: 1350, max: 1950 },
+      { x: 2670, z: 2100, dir: 1, min: 1950, max: 2600 },
+      { x: 920, z: 900, dir: 1, min: 600, max: 1200 } // Downtown pedestrian
     ];
 
     const pedGeo = new THREE.CylinderGeometry(1.2, 1.2, 7.0, 8);

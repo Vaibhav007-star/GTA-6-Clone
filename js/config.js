@@ -23,9 +23,9 @@ const CONFIG = {
   TITLE: 'Retro City: Outlaw',
   VERSION: '1.0.0',
 
-  // World dimensions (pixels)
-  WORLD_WIDTH: 2600,
-  WORLD_HEIGHT: 2600,
+  // World dimensions (pixels / 3D units)
+  WORLD_WIDTH: 3200,
+  WORLD_HEIGHT: 3200,
   ROAD_WIDTH: 150,
 
   // Camera settings

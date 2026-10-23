@@ -1,49 +1,59 @@
 {
   "zones": [
     {
-      "id": "zone_downtown",
-      "name": "Downtown Central",
-      "type": "Commercial",
-      "bounds": { "minX": 250, "minY": 250, "maxX": 1300, "maxY": 1300 },
+      "id": "zone_ocean_drive",
+      "name": "Ocean Drive & South Beach",
+      "type": "Beachfront",
+      "bounds": { "minX": 2300, "minY": 200, "maxX": 3000, "maxY": 2900 },
       "trafficDensity": "HIGH",
       "pedestrianDensity": "HIGH",
       "policeResponseTime": "FAST",
-      "streetColor": "#1e252b",
-      "description": "High-density skyscrapers, corporate plazas, and bustling avenue traffic."
+      "streetColor": "#222629",
+      "description": "Iconic coastal boulevard lined with swaying Florida palm trees, pastel Art Deco hotels, and white sandy beaches."
     },
     {
-      "id": "zone_park",
-      "name": "Central Green Reserve",
-      "type": "Recreation",
-      "bounds": { "minX": 860, "minY": 860, "maxX": 1190, "maxY": 1190 },
-      "trafficDensity": "NONE",
-      "pedestrianDensity": "MEDIUM",
-      "policeResponseTime": "MEDIUM",
-      "streetColor": "#27ae60",
-      "description": "Public sanctuary with fountains, walkways, and secluded cash stashes."
+      "id": "zone_downtown",
+      "name": "Downtown Vice Skyscraper District",
+      "type": "Metropolitan",
+      "bounds": { "minX": 300, "minY": 200, "maxX": 1400, "maxY": 1800 },
+      "trafficDensity": "HIGH",
+      "pedestrianDensity": "HIGH",
+      "policeResponseTime": "RAPID",
+      "streetColor": "#1a1e22",
+      "description": "High-density glass towers, corporate skyscrapers with rooftop helipads, and tight 90-degree drift intersections."
     },
     {
-      "id": "zone_industrial",
-      "name": "Eastside Industrial & Yards",
+      "id": "zone_starfish",
+      "name": "Starfish Luxury Island",
+      "type": "Exclusive Residential",
+      "bounds": { "minX": 1450, "minY": 1300, "maxX": 1850, "maxY": 1700 },
+      "trafficDensity": "LOW",
+      "pedestrianDensity": "LOW",
+      "policeResponseTime": "FAST",
+      "streetColor": "#2f3640",
+      "description": "Exclusive island villa enclave nestled in the bay with luxury mansions, fountains, swimming pools, and exotic hypercars."
+    },
+    {
+      "id": "zone_port",
+      "name": "Vice Port & Chop Shop Docks",
       "type": "Industrial",
-      "bounds": { "minX": 1300, "minY": 250, "maxX": 2350, "maxY": 1300 },
+      "bounds": { "minX": 300, "minY": 1900, "maxX": 1400, "maxY": 2900 },
       "trafficDensity": "MEDIUM",
       "pedestrianDensity": "LOW",
       "policeResponseTime": "SLOW",
-      "streetColor": "#182026",
-      "description": "Warehouses, cargo freight hubs, and underground vehicle chop-shops."
+      "streetColor": "#192a56",
+      "description": "Cargo container yards, freight docks, heavy cranes, and the underground chop-shop dropoff garage."
     },
     {
-      "id": "zone_southside",
-      "name": "Southside District",
-      "type": "Residential",
-      "bounds": { "minX": 250, "minY": 1300, "maxX": 2350, "maxY": 2350 },
-      "trafficDensity": "MEDIUM",
-      "pedestrianDensity": "MEDIUM",
+      "id": "zone_causeways",
+      "name": "Biscayne Bay Causeway Bridges",
+      "type": "Highways",
+      "bounds": { "minX": 1350, "minY": 700, "maxX": 1950, "maxY": 2300 },
+      "trafficDensity": "HIGH",
+      "pedestrianDensity": "NONE",
       "policeResponseTime": "MODERATE",
-      "streetColor": "#202b33",
-      "description": "Residential grid blocks, parking structures, and open cruising boulevards."
+      "streetColor": "#273c75",
+      "description": "Long multi-lane bridge straightaways connecting the islands over the open ocean bay. Prime spot for top-speed testing and police roadblocks."
     }
   ]
 }
-
